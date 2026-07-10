@@ -188,7 +188,7 @@ def generate_launch_description():
     # 1. DECLARE THE ARGUMENT (Default is just the name, not the path)
     world_arg_decl = DeclareLaunchArgument(
         'world',
-        default_value='template',
+        default_value='full_course',
         description='Name of the simulation world'
     )
 
