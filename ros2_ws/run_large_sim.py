@@ -8,7 +8,7 @@ import sys
 import select
 
 parser = argparse.ArgumentParser(description="Run single simulation")
-parser.add_argument('--world', type=str, default="template",
+parser.add_argument('--world', type=str, default="full_course",
                     help="Name of the simulation to launch")
 parser.add_argument('--gui', type=str, default="true",
                     help="Show gui during batch simulation (default=true)")
