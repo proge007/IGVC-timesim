@@ -34,9 +34,17 @@ CAMERA_TOPICS = [
     "/usb_cam_1/image_raw"
 ]
 
+
+
+
 LIDAR_TOPIC = "/scan"
 IMU_TOPIC = "/imu/data"
 CONTROL_TOPIC = "/joy"
+
+
+###for quick test
+MAX_CAM0_FRAMES = 1500
+
 
 #DATASET_DIR = "dataset/05_28_27"
 IMAGE_DIR = f"{DATASET_DIR}/images"
@@ -44,9 +52,9 @@ IMAGE_DIR = f"{DATASET_DIR}/images"
 os.makedirs(DATASET_DIR, exist_ok=True)
 os.makedirs(IMAGE_DIR, exist_ok=True)
 
-for cam in CAMERA_TOPICS:
-    cam_name = cam.replace("/", "_")
-    os.makedirs(f"{IMAGE_DIR}/{cam_name}", exist_ok=True)
+os.makedirs(f"{IMAGE_DIR}/cam_0", exist_ok=True)
+os.makedirs(f"{IMAGE_DIR}/cam_1", exist_ok=True)
+
 
 bridge = CvBridge()
 
@@ -94,7 +102,7 @@ while reader.has_next():
 
     # CAMERA
 
-    if topic == "/usb_cam_0/image_raw":
+    if topic == "/usb_cam_0/image_raw":    
 
         msg = deserialize_message(data, Image)
 
@@ -110,6 +118,11 @@ while reader.has_next():
         cam0_dict[timestamp] = filename
 
         image_counts[topic] += 1
+
+        ###added for testing
+        if image_counts[topic] >= MAX_CAM0_FRAMES:
+           print("test extraction frames limits completed")
+           break
 
     elif topic == "/usb_cam_1/image_raw":
 
