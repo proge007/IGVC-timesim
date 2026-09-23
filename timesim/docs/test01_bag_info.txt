@@ -1,0 +1,49 @@
+
+Files:             rosbag2_2025_05_28-00_54_27_0.mcap
+Bag size:          40.1 GiB
+Storage id:        mcap
+Duration:          2539.170734112s
+Start:             May 28 2025 00:54:28.943941672 (1748408068.943941672)
+End:               May 28 2025 01:36:48.114675784 (1748410608.114675784)
+Messages:          1088390
+Topic information: Topic: /usb_cam_0/camera_info | Type: sensor_msgs/msg/CameraInfo | Count: 63430 | Serialization Format: cdr
+                   Topic: /rosout | Type: rcl_interfaces/msg/Log | Count: 2547 | Serialization Format: cdr
+                   Topic: /filter/twist | Type: geometry_msgs/msg/TwistStamped | Count: 0 | Serialization Format: cdr
+                   Topic: /tf | Type: tf2_msgs/msg/TFMessage | Count: 50786 | Serialization Format: cdr
+                   Topic: /utctime | Type: sensor_msgs/msg/TimeReference | Count: 0 | Serialization Format: cdr
+                   Topic: /status | Type: xsens_mti_ros2_driver/msg/XsStatusWord | Count: 50787 | Serialization Format: cdr
+                   Topic: /temperature | Type: sensor_msgs/msg/Temperature | Count: 0 | Serialization Format: cdr
+                   Topic: /pressure | Type: sensor_msgs/msg/FluidPressure | Count: 0 | Serialization Format: cdr
+                   Topic: /usb_cam_1/camera_info | Type: sensor_msgs/msg/CameraInfo | Count: 61977 | Serialization Format: cdr
+                   Topic: /packages | Type: packager_msgs/msg/Package | Count: 25301 | Serialization Format: cdr
+                   Topic: /odu/fix | Type: geometry_msgs/msg/Vector3 | Count: 2539 | Serialization Format: cdr
+                   Topic: /imu/acceleration | Type: geometry_msgs/msg/Vector3Stamped | Count: 50796 | Serialization Format: cdr
+                   Topic: /filter/velocity | Type: geometry_msgs/msg/Vector3Stamped | Count: 0 | Serialization Format: cdr
+                   Topic: /usb_cam_0/image_raw | Type: sensor_msgs/msg/Image | Count: 63439 | Serialization Format: cdr
+                   Topic: /imu/angular_velocity | Type: geometry_msgs/msg/Vector3Stamped | Count: 0 | Serialization Format: cdr
+                   Topic: /events/write_split | Type: rosbag2_interfaces/msg/WriteSplitEvent | Count: 0 | Serialization Format: cdr
+                   Topic: /nmea | Type: nmea_msgs/msg/Sentence | Count: 0 | Serialization Format: cdr
+                   Topic: /gnss | Type: sensor_msgs/msg/NavSatFix | Count: 0 | Serialization Format: cdr
+                   Topic: /imu/dq | Type: geometry_msgs/msg/QuaternionStamped | Count: 50796 | Serialization Format: cdr
+                   Topic: /usb_cam_0/image_raw/theora | Type: theora_image_transport/msg/Packet | Count: 63391 | Serialization Format: cdr
+                   Topic: /usb_cam_1/image_raw/compressed | Type: sensor_msgs/msg/CompressedImage | Count: 61987 | Serialization Format: cdr
+                   Topic: /usb_cam_0/image_raw/compressed | Type: sensor_msgs/msg/CompressedImage | Count: 63440 | Serialization Format: cdr
+                   Topic: /gps | Type: packager_msgs/msg/Gps | Count: 1077 | Serialization Format: cdr
+                   Topic: /usb_cam_1/image_raw/theora | Type: theora_image_transport/msg/Packet | Count: 61981 | Serialization Format: cdr
+                   Topic: /filter/free_acceleration | Type: geometry_msgs/msg/Vector3Stamped | Count: 0 | Serialization Format: cdr
+                   Topic: /parameter_events | Type: rcl_interfaces/msg/ParameterEvent | Count: 0 | Serialization Format: cdr
+                   Topic: /usb_cam_1/image_raw/compressedDepth | Type: sensor_msgs/msg/CompressedImage | Count: 0 | Serialization Format: cdr
+                   Topic: /imu/dv | Type: geometry_msgs/msg/Vector3Stamped | Count: 50788 | Serialization Format: cdr
+                   Topic: /usb_cam_1/image_raw | Type: sensor_msgs/msg/Image | Count: 61977 | Serialization Format: cdr
+                   Topic: /usb_cam_0/image_raw/compressedDepth | Type: sensor_msgs/msg/CompressedImage | Count: 0 | Serialization Format: cdr
+                   Topic: /imu/data | Type: sensor_msgs/msg/Imu | Count: 50791 | Serialization Format: cdr
+                   Topic: /gps_string | Type: std_msgs/msg/String | Count: 2539 | Serialization Format: cdr
+                   Topic: /motor_control | Type: packager_msgs/msg/MotorControl | Count: 2535 | Serialization Format: cdr
+                   Topic: /filter/quaternion | Type: geometry_msgs/msg/QuaternionStamped | Count: 50790 | Serialization Format: cdr
+                   Topic: /filter/positionlla | Type: geometry_msgs/msg/Vector3Stamped | Count: 0 | Serialization Format: cdr
+                   Topic: /gnss_pose | Type: geometry_msgs/msg/PoseStamped | Count: 0 | Serialization Format: cdr
+                   Topic: /imu/mag | Type: sensor_msgs/msg/MagneticField | Count: 0 | Serialization Format: cdr
+                   Topic: /scan | Type: sensor_msgs/msg/LaserScan | Count: 25437 | Serialization Format: cdr
+                   Topic: /imu/time_ref | Type: sensor_msgs/msg/TimeReference | Count: 50787 | Serialization Format: cdr
+                   Topic: /joy | Type: sensor_msgs/msg/Joy | Count: 118472 | Serialization Format: cdr
+
