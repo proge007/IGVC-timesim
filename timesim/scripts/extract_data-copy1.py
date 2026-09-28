@@ -255,7 +255,10 @@ print("Camera frames:")
 for cam in CAMERA_TOPICS:
     print(cam, image_counts[cam])
 
-print("\nLiDAR:", len(lidar_data))
-print("IMU:", len(imu_data))
-print("Control:", len(control_data))
+print("\nLiDAR:", len(lidar_dict))
+print("IMU:", len(imu_dict))
+print("Control:", len(joy_dict))
+
+
+
 
