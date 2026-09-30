@@ -49,6 +49,7 @@ MAX_CAM0_FRAMES = 1500
 #DATASET_DIR = "dataset/05_28_27"
 IMAGE_DIR = f"{DATASET_DIR}/images"
 
+
 os.makedirs(DATASET_DIR, exist_ok=True)
 os.makedirs(IMAGE_DIR, exist_ok=True)
 
@@ -98,7 +99,13 @@ type_map = {topic.name: topic.type for topic in topic_types}
 
 while reader.has_next():
 
-    topic, data, timestamp = reader.read_next()
+    topic, data, timestamp_ns = reader.read_next()
+
+
+    ##### timestamp synchronize addition
+    bag_timestamp = timestamp_ns / 1e9
+
+
 
     # CAMERA
 
@@ -106,16 +113,15 @@ while reader.has_next():
 
         msg = deserialize_message(data, Image)
 
-        timestamp = msg.header.stamp.sec + \
-                msg.header.stamp.nanosec * 1e-9
-
+        
         cv_img = bridge.imgmsg_to_cv2(msg, "bgr8")
 
         filename = f"{IMAGE_DIR}/cam0/{image_counts[topic]:06d}.png"
 
         cv2.imwrite(filename, cv_img)
 
-        cam0_dict[timestamp] = filename
+        ###changed for better rosbag clock
+        cam0_dict[bag_timestamp] = filename
 
         image_counts[topic] += 1
 
@@ -127,9 +133,7 @@ while reader.has_next():
     elif topic == "/usb_cam_1/image_raw":
 
         msg = deserialize_message(data, Image)
-
-        timestamp = msg.header.stamp.sec + \
-                msg.header.stamp.nanosec * 1e-9
+        
 
         cv_img = bridge.imgmsg_to_cv2(msg, "bgr8")
 
@@ -137,18 +141,22 @@ while reader.has_next():
 
         cv2.imwrite(filename, cv_img)
 
-        cam1_dict[timestamp] = filename
+
+        ###changed for better rosbag clock
+        cam1_dict[bag_timestamp] = filename
+
 
         image_counts[topic] += 1
+
     # LIDAR
     elif topic == LIDAR_TOPIC:
 
         msg = deserialize_message(data, LaserScan)
 
-        timestamp = msg.header.stamp.sec + \
-                msg.header.stamp.nanosec * 1e-9
 
-        lidar_dict[timestamp] = np.array(msg.ranges)
+        ###changed for better rosbag clock
+        lidar_dict[bag_timestamp] = np.array(msg.ranges)
+
         '''ranges = np.array(msg.ranges)
 
         lidar_data.append(
@@ -160,10 +168,9 @@ while reader.has_next():
 
         msg = deserialize_message(data, Imu)
 
-        timestamp = msg.header.stamp.sec + \
-                msg.header.stamp.nanosec * 1e-9
 
-        imu_dict[timestamp] = np.array([
+        ###changed for better rosbag clock
+        imu_dict[bag_timestamp] = np.array([
             msg.linear_acceleration.x,
             msg.linear_acceleration.y,
             msg.linear_acceleration.z,
@@ -171,6 +178,7 @@ while reader.has_next():
             msg.angular_velocity.y,
             msg.angular_velocity.z
         ])
+
         '''msg = deserialize_message(data, Imu)
 
         imu_data.append([
@@ -188,13 +196,12 @@ while reader.has_next():
 
         msg = deserialize_message(data, Joy)
 
-        timestamp = msg.header.stamp.sec + \
-                msg.header.stamp.nanosec * 1e-9
-
-        joy_dict[timestamp] = [
+        
+        joy_dict[bag_timestamp] = [
             msg.axes[0],
             msg.axes[1]
         ]
+
         '''elif topic == CONTROL_TOPIC:
 
         #msg = deserialize_message(data, type_map[topic])
@@ -203,7 +210,7 @@ while reader.has_next():
         if len(msg.axes) < 2:
             continue
 
-        timestamp = msg.header.stamp.sec + \
+       timestamp = msg.header.stamp.sec + \
                 msg.header.stamp.nanosec * 1e-9
 
         steering = msg.axes[0]
