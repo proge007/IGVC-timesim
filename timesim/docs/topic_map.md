@@ -19,9 +19,15 @@ TF: /tf
 GPS: /gps
 
 # Perception
-YOLO Detection: UNKNOWN
+YOLO Detection: /yolo/detections
+YOLO Detection: Type: vision_msgs/msg/Detection2DArray
+YOLO Detection: Image: /yolo/image_annotated
+YOLO Detection: /yolo/detections
 Lane Detection: UNKNOWN
 
 # Notes
 /motor_control uses packager_msgs/msg/MotorControl
 Current VM does not yet have packager_msgs available.
+
+
+ 
