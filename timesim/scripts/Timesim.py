@@ -1,6 +1,15 @@
 import argparse 
 import csv 
+import sys
 from pathlib import Path
+
+
+from PyQt5.QtWidgets import (
+    QApplication,
+    QLabel,
+    QMainWindow
+)
+
 
 timesimParser = argparse.ArgumentParser()
 
@@ -17,8 +26,8 @@ timesimDataDirectory = Path(
 )
 
 syncFile = (
-timesimDataDirectory / 
-"sync-data-timesim.csv"
+    timesimDataDirectory / 
+    "sync-data-timesim.csv"
 )
 
 rows = []
@@ -29,6 +38,32 @@ with syncFile.open("r") as file:
     for row in reader:
         rows.append(row)
 
+
+
 print("Timesim replay data loaded")
 print("sync file:", syncFile)
 print("Frames loaded:", len(rows))
+
+
+
+class WINDOW(QMainWindow):
+
+    def __init__(self):
+        super().__init__()
+
+        self.setWindowTitle("TimeSim")
+
+        message = QLabel(
+            f"Replay \nFrames loaded: {len(rows)}"
+        ) 
+
+        self.setCentralWidget(message)
+
+        self.resize(800, 800)
+
+application = QApplication(sys.argv)
+
+WINDOW = WINDOW()
+WINDOW.show()
+
+sys.exit(application.exec_())
