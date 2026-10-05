@@ -40,8 +40,8 @@ with syncFile.open("r") as file:
 
 
 
-print("Timesim replay data loaded")
-print("sync file:", syncFile)
+print("----Timesim replay data loaded----")
+print("----sync file:", syncFile)
 print("Frames loaded:", len(rows))
 
 
