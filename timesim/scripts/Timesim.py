@@ -4,10 +4,14 @@ import sys
 from pathlib import Path
 
 
+from PyQt5.QtCore import Qt 
+from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import (
     QApplication,
     QLabel,
-    QMainWindow
+    QMainWindow,
+    QVBoxLayout,
+    QWidget
 )
 
 
@@ -53,17 +57,54 @@ class WINDOW(QMainWindow):
 
         self.setWindowTitle("TimeSim")
 
+        mainWidget = QWidget()
+        mainLayout = QVBoxLayout()
+
+        mainWidget.setLayout(mainLayout)
+        self.setCentralWidget(mainWidget)
+
         message = QLabel(
-            f"Replay \nFrames loaded: {len(rows)}"
-        ) 
+            f"Replay\nFrames Loaded: {len(rows)}|"
+        )
+        mainLayout.addWidget(message)
 
-        self.setCentralWidget(message)
+        self.camera0Label = QLabel("Camera 0:")
+        self.camera0Label.setAlignment(Qt.AlignCenter)
 
-        self.resize(800, 800)
+        mainLayout.addWidget(self.camera0Label)
 
+
+
+        camera0Path = rows[0]["cam0Path"]
+
+        print("camera 0 image:", camera0Path)
+
+        pixmap = QPixmap(camera0Path)
+
+        if pixmap.isNull():
+
+            self.camera0Label.setText(
+                "camera 0 error"
+            )
+
+        else:
+
+            pixmap = pixmap.scaled(
+                700,
+                450,
+                Qt.KeepAspectRatio,
+                Qt.SmoothTransformation
+            )
+
+            self.camera0Label.setPixmap(pixmap)
+
+            print("----cam0 loaded ------")
+                        
+        self.resize(800,600)
+    
 application = QApplication(sys.argv)
-
-WINDOW = WINDOW()
-WINDOW.show()
-
+            
+timesimWindow = WINDOW()
+timesimWindow.show()
+            
 sys.exit(application.exec_())

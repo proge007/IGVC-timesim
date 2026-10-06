@@ -53,8 +53,8 @@ IMAGE_DIR = f"{DATASET_DIR}/images"
 os.makedirs(DATASET_DIR, exist_ok=True)
 os.makedirs(IMAGE_DIR, exist_ok=True)
 
-os.makedirs(f"{IMAGE_DIR}/cam_0", exist_ok=True)
-os.makedirs(f"{IMAGE_DIR}/cam_1", exist_ok=True)
+os.makedirs(f"{IMAGE_DIR}/cam0", exist_ok=True)
+os.makedirs(f"{IMAGE_DIR}/cam1", exist_ok=True)
 
 
 bridge = CvBridge()
