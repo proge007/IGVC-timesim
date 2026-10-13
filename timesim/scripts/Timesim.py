@@ -14,9 +14,9 @@ from PyQt5.QtWidgets import (
     QMainWindow,
     QVBoxLayout,
     QWidget,
-    QPushButton
+    QPushButton,
+    QSlider
 )
-
 
 
 timesimParser = argparse.ArgumentParser()
@@ -78,7 +78,22 @@ class WINDOW(QMainWindow):
         mainLayout.addWidget(message)
 
 
+########################## video slider #############################
+
+        self.videoSlider = QSlider(
+            Qt.Horizontal
+        )
+
+        self.videoSlider.setMinimum(0)
+
+        self.videoSlider.setMaximum(len(rows) - 1)
+
+        self.videoSlider.valueChanged.connect(self.showFrame)
+
+        mainLayout.addWidget(self.videoSlider)
+
     ##################### camera layout #################################
+
 
         cameraLayout = QHBoxLayout()
 
@@ -144,6 +159,15 @@ class WINDOW(QMainWindow):
     def showFrame(self, frameNumber):
 
         self.currentFrame = frameNumber
+
+        
+        
+        self.videoSlider.blockSignals(True)
+
+        self.videoSlider.setValue(self.currentFrame)
+
+        self.videoSlider.blockSignals(False)
+
             
         row = rows[self.currentFrame]
 
@@ -166,9 +190,7 @@ class WINDOW(QMainWindow):
                 Qt.SmoothTransformation
             )
 
-            self.camera0Label.setPixmap(
-                pixmap0
-            )
+            self.camera0Label.setPixmap(pixmap)
 
 
 
