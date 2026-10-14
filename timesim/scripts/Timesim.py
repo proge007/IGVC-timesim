@@ -34,7 +34,9 @@ timesimDataDirectory = Path(
     args.syncTIMESIMdata
 )
 
+
 syncFile = (timesimDataDirectory / "sync-data-timesim.csv")
+
 
 MarkedERRORfile = (timesimDataDirectory / "markedIGVerror.csv")
 
@@ -142,41 +144,41 @@ class WINDOW(QMainWindow):
 
         ######################## Buttonlayout ########################
 
+        
         ButtonLayout = QHBoxLayout()
 
         self.previousButton = QPushButton("Previous")
+
         self.playButton = QPushButton("Play")
+
         self.nextButton = QPushButton("Next")
 
-        self.playButton.clicked.connect(
-            self.playPause
-        )
+        self.errorButton = QPushButton("Error")
 
-        self.previousButton.clicked.connect(
-             self.previousFrame
-        )
 
-        self.nextButton.clicked.connect(
-            self.nextFrame
-        )
 
-        ButtonLayout.addWidget(
-            self.previousButton
-        )
+        self.playButton.clicked.connect(self.playPause)
 
-        ButtonLayout.addWidget(
-             self.playButton
-        )
+        self.previousButton.clicked.connect(self.previousFrame)
 
-        ButtonLayout.addWidget(
-            self.nextButton
-        )
-
-        mainLayout.addLayout(
-            ButtonLayout
-        )
-
+        self.nextButton.clicked.connect(self.nextFrame)
         
+        self.errorButton.clicked.connect(self.errorMark)
+
+
+
+        ButtonLayout.addWidget(self.previousButton)
+
+        ButtonLayout.addWidget(self.playButton)
+
+        ButtonLayout.addWidget(self.nextButton)
+    
+        ButtonLayout.addWidget(self.errorButton)
+
+
+
+        mainLayout.addLayout(ButtonLayout)
+
 
         ######################## window frame  ########################
 
@@ -356,6 +358,40 @@ class WINDOW(QMainWindow):
             self.showFrame(
                 self.currentFrame + 1
             )
+
+
+
+    def errorMark(self):
+
+        row = rows[self.currentFrame]
+
+        with MarkedERRORfile.open("a") as file:
+
+            file.write("----- TimeSim Error Information ----- \n")
+
+            file.write(f"Frame: {self.currentFrame + 1}\n")
+
+            file.write(f"timeSec: {row['timeSec']}\n")
+
+            file.write(f"cam0Timestamp: {row['cam0Timestamp']}\n")
+
+            file.write(f"cam1Timestamp: {row['cam1Timestamp']}\n")
+
+            file.write(f"lidarTimestamp: {row['lidarTimestamp']}\n")
+
+            file.write(f"imuTimestamp: {row['imuTimestamp']}\n")
+
+            file.write(f"joyTimestamp: {row['joyTimestamp']}\n")
+
+            file.write(f"joyAxis0: {row['joyAxis0']}\n")
+
+            file.write(f"joyAxis1: {row['joyAxis1']}\n")
+
+            file.write("\n")
+
+
+        print("TimeSim: error marked at frame:", self.currentFrame +1)
+
 
 
     ################### timesim intialization ####################  
