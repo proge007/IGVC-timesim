@@ -39,7 +39,12 @@ syncFile = (
     "sync-data-timesim.csv"
 )
 
+
+if not syncFile.exists():
+    raise FileNotFoundError(f"ERROR: TimeSim sync file not found: {syncFile}")
+
 rows = []
+
 
 with syncFile.open("r") as file:
     reader = csv.DictReader(file)
@@ -47,6 +52,8 @@ with syncFile.open("r") as file:
     for row in reader:
         rows.append(row)
 
+if len(rows) ==0:
+    raise RuntimeError("ERROR: timesim sync file contains no frames")
 
 
 print("----Timesim replay data loaded----")
