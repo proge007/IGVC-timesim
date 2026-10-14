@@ -245,7 +245,7 @@ class WINDOW(QMainWindow):
         infoText = (
             f"Frame: {self.currentFrame + 1} / {len(rows)}\n"
             f"Time: {float(row['timeSec']):.3f} seconds\n"
-            f"LiDAR differene: {float(row['lidarDt']):.4f} seconds\n"
+            f"LiDAR difference: {float(row['lidarDt']):.4f} seconds\n"
             f"IMU difference: {float(row['imuDt']):.4f} seconds\n"
             f"Joy difference: {float(row['joyDt']):.4f} seconds\n"
             f"Joy Axis 0: {row['joyAxis0']}\n"
@@ -312,11 +312,11 @@ class WINDOW(QMainWindow):
         delaySeconds = nextTime - currentTime
 
 
-        delayMaxSeconds = max(
+        frameDelay = max(
             1, int(delaySeconds * 1000)
         )       
 
-        self.timer.start(delayMaxSeconds)
+        self.timer.start(frameDelay)
 
 
 
