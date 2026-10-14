@@ -34,10 +34,9 @@ timesimDataDirectory = Path(
     args.syncTIMESIMdata
 )
 
-syncFile = (
-    timesimDataDirectory / 
-    "sync-data-timesim.csv"
-)
+syncFile = (timesimDataDirectory / "sync-data-timesim.csv")
+
+MarkedERRORfile = (timesimDataDirectory / "markedIGVerror.csv")
 
 
 if not syncFile.exists():
