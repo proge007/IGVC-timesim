@@ -4,8 +4,9 @@ import sys
 from pathlib import Path
 
 
-from PyQt5.QtCore import Qt 
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import Qt, QTimer 
+from PyQt5.QtGui import QPixmap 
+
 
 from PyQt5.QtWidgets import (
     QApplication,
@@ -60,7 +61,17 @@ class WINDOW(QMainWindow):
         super().__init__()
 
         self.setWindowTitle("TimeSim")
+        
         self.currentFrame = 0
+
+
+        self.isPlaying = False
+        
+        self.timer = QTimer(self)
+        
+        self.timer.setSingleShot(True)
+
+        self.timer.timeout.connect(self.playNextFrame)
 
 
         mainWidget = QWidget()
@@ -89,6 +100,8 @@ class WINDOW(QMainWindow):
         self.videoSlider.setMaximum(len(rows) - 1)
 
         self.videoSlider.valueChanged.connect(self.showFrame)
+
+        self.videoSlider.sliderPressed.connect(self.pausePlayback)
 
         mainLayout.addWidget(self.videoSlider)
 
@@ -126,10 +139,15 @@ class WINDOW(QMainWindow):
         ButtonLayout = QHBoxLayout()
 
         self.previousButton = QPushButton("Previous")
+        self.playButton = QPushButton("Play")
         self.nextButton = QPushButton("Next")
 
+        self.playButton.clicked.connect(
+            self.playPause
+        )
+
         self.previousButton.clicked.connect(
-            self.previousFrame
+             self.previousFrame
         )
 
         self.nextButton.clicked.connect(
@@ -138,6 +156,10 @@ class WINDOW(QMainWindow):
 
         ButtonLayout.addWidget(
             self.previousButton
+        )
+
+        ButtonLayout.addWidget(
+             self.playButton
         )
 
         ButtonLayout.addWidget(
@@ -237,7 +259,80 @@ class WINDOW(QMainWindow):
 
     ###################  previous and next button functions ####################  
 
+    def playPause(self):
+
+        if self.isPlaying:
+            self.pausePlayback()
+
+        else:
+            self.startPlayback()
+
+
+
+    def startPlayback(self):
+
+        if self.currentFrame >= len(rows) - 1:
+            self.showFrame(0)
+
+
+        self.isPlaying = True
+
+        self.playButton.setText("Pause")
+
+        self.scheduleNextFrame()
+
+
+    def pausePlayback(self):
+
+        self.isPlaying = False
+
+        self.timer.stop()
+
+        self.playButton.setText("Play")
+
+
+
+    def scheduleNextFrame(self):
+
+        if not self.isPlaying:
+            return
+
+        if self.currentFrame >= len(rows) - 1:
+            self.pausePlayback()
+            return
+
+        currentTime = float(
+            rows[self.currentFrame]["timeSec"]
+        )   
+
+        nextTime = float(
+            rows[self.currentFrame + 1]["timeSec"]
+        )    
+
+        delaySeconds = nextTime - currentTime
+
+
+        delayMaxSeconds = max(
+            1, int(delaySeconds * 1000)
+        )       
+
+        self.timer.start(delayMaxSeconds)
+
+
+
+    def playNextFrame(self):
+
+        if not self.isPlaying:
+            return
+
+        self.showFrame(self.currentFrame + 1)
+
+        self.scheduleNextFrame()
+
+
     def previousFrame(self):
+
+        self.pausePlayback()
 
         if self.currentFrame > 0:
 
@@ -247,6 +342,8 @@ class WINDOW(QMainWindow):
 
 
     def nextFrame(self):
+
+        self.pausePlayback()
 
         if self.currentFrame < len(rows) - 1:
 
