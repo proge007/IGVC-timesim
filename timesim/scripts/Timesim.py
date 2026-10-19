@@ -38,7 +38,19 @@ timesimDataDirectory = Path(
 syncFile = (timesimDataDirectory / "sync-data-timesim.csv")
 
 
-MarkedERRORfile = (timesimDataDirectory / "markedIGVerror.csv")
+MarkedERRORfile = (timesimDataDirectory / "markedIGVerror.txt")
+
+MarkedERRORframes = []
+
+if MarkedERRORfile.exists():
+    with MarkedERRORfile.open("r") as file:
+        for line in file:
+            if line.startswith("Frame:"):
+
+                frameNUM = int(line.split(":")[1].strip())
+
+                MarkedERRORframes.append(frameNUM - 1)
+
 
 
 if not syncFile.exists():
@@ -67,6 +79,11 @@ class WINDOW(QMainWindow):
 
     def __init__(self):
         super().__init__()
+
+        self.errorINFOmark = QLabel(f"Marked Errors: {len(MarkedERRORframes)}")
+
+        self.errorINFOmark.setAlignment(Qt.AlignCenter)
+
 
         self.setWindowTitle("TimeSim")
         
@@ -140,6 +157,8 @@ class WINDOW(QMainWindow):
         
         mainLayout.addWidget(self.infoLabel)
 
+        mainLayout.addWidget(self.errorINFOmark)
+
        
 
         ######################## Buttonlayout ########################
@@ -186,9 +205,9 @@ class WINDOW(QMainWindow):
         
         self.resize(900,700)
 
-    def showFrame(self, frameNumber):
+    def showFrame(self, frameNUM):
 
-        self.currentFrame = frameNumber
+        self.currentFrame = frameNUM
 
         
         
@@ -360,8 +379,17 @@ class WINDOW(QMainWindow):
             )
 
 
+    ################### timesim error log format ####################  
+
 
     def errorMark(self):
+
+        self.pausePlayback()
+
+        if self.currentFrame in MarkedERRORframes:
+            print("timesim: frame already marked",self.currentFrame + 1)
+
+            return
 
         row = rows[self.currentFrame]
 
@@ -388,6 +416,10 @@ class WINDOW(QMainWindow):
             file.write(f"joyAxis1: {row['joyAxis1']}\n")
 
             file.write("\n")
+
+        MarkedERRORframes.append(self.currentFrame)
+
+        self.errorINFOmark.setText(f"marked errors: {len(MarkedERRORframes)}")
 
 
         print("TimeSim: error marked at frame:", self.currentFrame +1)
