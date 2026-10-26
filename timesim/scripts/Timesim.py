@@ -16,7 +16,10 @@ from PyQt5.QtWidgets import (
     QVBoxLayout,
     QWidget,
     QPushButton,
-    QSlider
+    QSlider,
+    QDialog,
+    QTextEdit,
+    QGroupBox
 )
 
 
@@ -107,70 +110,146 @@ class WINDOW(QMainWindow):
         self.setCentralWidget(mainWidget)
 
 
-        message = QLabel(
-            f"Replay\nFrames Loaded: {len(rows)}|"
-        )
-
-        mainLayout.addWidget(message)
+######################### timesim window topsection ###################################
 
 
-########################## video slider #############################
+        topLayout = QHBoxLayout()
 
-        self.videoSlider = QSlider(
-            Qt.Horizontal
-        )
+        frameLoadedLabel = QLabel(f"Replay\nFrames Loaded: {len(rows)}|")
 
-        self.videoSlider.setMinimum(0)
+        topLayout.addWidget(frameLoadedLabel)
 
-        self.videoSlider.setMaximum(len(rows) - 1)
+        topLayout.addStretch()
 
-        self.videoSlider.valueChanged.connect(self.showFrame)
+        topLayout.addWidget(self.errorINFOmark)
 
-        self.videoSlider.sliderPressed.connect(self.pausePlayback)
+        mainLayout.addLayout(topLayout)
 
-        mainLayout.addWidget(self.videoSlider)
 
-    ##################### camera layout #################################
-
+##################################### camera layout #################################
 
         cameraLayout = QHBoxLayout()
 
-        self.camera0Label = QLabel("Camera 0:")
+        cameraZero = QGroupBox("Camera 0:")
+
+        camera0Layout = QVBoxLayout()
+
+
+        self.camera0Label = QLabel()
+
         self.camera0Label.setAlignment(Qt.AlignCenter)
 
-        self.camera1Label = QLabel("Camera 1:")
+
+        camera0Layout.addWidget(self.camera0Label)
+
+        cameraZero.setLayout(camera0Layout)
+
+        
+        cameraOne = QGroupBox("Camera 1:")
+
+        camera1Layout = QVBoxLayout()
+
+
+        self.camera1Label = QLabel()
+
         self.camera1Label.setAlignment(Qt.AlignCenter)
 
-        cameraLayout.addWidget(self.camera0Label)
-        cameraLayout.addWidget(self.camera1Label)
+        camera1Layout.addWidget(self.camera1Label)
 
+        cameraOne.setLayout(camera1Layout)
+
+
+        cameraLayout.addWidget(cameraZero)
+
+        cameraLayout.addWidget(cameraOne)
 
         mainLayout.addLayout(cameraLayout)
 
 
+########################## timesim video control #############################
 
-    ######################## Syned Data text ###############################
+        videoControl = QGroupBox("Video Controls:")
+
+        videoControlLayout = QVBoxLayout()
+
+        self.videoControlInfoLabel = QLabel()
+
+
+        self.videoControlInfoLabel.setAlignment(Qt.AlignCenter)
+
+        videoControlLayout.addWidget(self.videoControlInfoLabel)
+
+
+        self.videoSlider = QSlider(Qt.Horizontal)
+        
+        self.videoSlider.setMinimum(0)
+        
+        self.videoSlider.setMaximum(len(rows) - 1)
+        
+        self.videoSlider.valueChanged.connect(self.showFrame)
+        
+        self.videoSlider.sliderPressed.connect(self.pausePlayback)
+        
+        videoControlLayout.addWidget(self.videoSlider)
+
+
+        videoControlButtonLayout = QHBoxLayout()
+        
+        self.previousButton = QPushButton("Previous")
+        
+        self.playButton = QPushButton("Play")
+
+        self.nextButton = QPushButton("Next")
+
+
+        self.previousButton.clicked.connect(self.previousFrame)
+
+        self.playButton.clicked.connect(self.playPause)
+
+        self.nextButton.clicked.connect(self.nextFrame)
+
+
+        videoControlButtonLayout.addStretch()
+
+        videoControlButtonLayout.addWidget(self.previousButton)
+
+        videoControlButtonLayout.addWidget(self.playButton)
+
+        videoControlButtonLayout.addWidget(self.nextButton)
+
+
+        videoControlButtonLayout.addStretch()
+
+        videoControlLayout.addLayout(videoControlButtonLayout)
+
+        videoControl.setLayout(videoControlLayout)
+
+
+        mainLayout.addWidget(videoControl)
+
+
+############################### Syned Data text ###############################
+  
+        syncData = QGroupBox("Sync Data:")
+
+        syncDataLayout = QVBoxLayout()
 
         self.infoLabel = QLabel()
 
         self.infoLabel.setAlignment(Qt.AlignCenter)
-        
-        mainLayout.addWidget(self.infoLabel)
 
-        mainLayout.addWidget(self.errorINFOmark)
+        syncDataLayout.addWidget(self.infoLabel)
 
-       
+        syncData.setLayout(syncDataLayout)
 
-        ######################## Buttonlayout ########################
+        mainLayout.addWidget(syncData)
 
-        
-        ButtonLayout = QHBoxLayout()
 
-        self.previousButton = QPushButton("Previous")
+############################### Debugging ###############################
 
-        self.playButton = QPushButton("Play")
+        debugControl = QGroupBox ("Debug Control: ")
 
-        self.nextButton = QPushButton("Next")
+        debugControlLayout = QHBoxLayout()
 
         self.errorButton = QPushButton("Error")
 
@@ -178,13 +257,8 @@ class WINDOW(QMainWindow):
 
         self.nextERRORButton = QPushButton("Next Error")
 
+        self.reportButton = QPushButton("Report")
 
-
-        self.playButton.clicked.connect(self.playPause)
-
-        self.previousButton.clicked.connect(self.previousFrame)
-
-        self.nextButton.clicked.connect(self.nextFrame)
         
         self.errorButton.clicked.connect(self.errorMark)
 
@@ -192,36 +266,37 @@ class WINDOW(QMainWindow):
 
         self.nextERRORButton.clicked.connect(self.nextError)
 
+        self.reportButton.clicked.connect(self.viewReport)
 
 
-        ButtonLayout.addWidget(self.previousButton)
+        debugControlLayout.addStretch()
 
-        ButtonLayout.addWidget(self.playButton)
+        debugControlLayout.addWidget(self.errorButton)
 
-        ButtonLayout.addWidget(self.nextButton)
-    
-        ButtonLayout.addWidget(self.errorButton)
+        debugControlLayout.addWidget(self.previousERRORButton)
 
-        ButtonLayout.addWidget(self.previousERRORButton)
-
-        ButtonLayout.addWidget(self.nextERRORButton)
+        debugControlLayout.addWidget(self.nextERRORButton)
+        
+        debugControlLayout.addWidget(self.reportButton)
 
 
+        debugControlLayout.addStretch()
 
-        mainLayout.addLayout(ButtonLayout)
+        debugControl.setLayout(debugControlLayout)
+
+        mainLayout.addWidget(debugControl)
 
 
         ######################## window frame  ########################
 
         self.showFrame(0)
         
-        self.resize(900,700)
+        self.resize(1000,900)
 
     def showFrame(self, frameNUM):
 
         self.currentFrame = frameNUM
 
-        
         
         self.videoSlider.blockSignals(True)
 
@@ -233,9 +308,30 @@ class WINDOW(QMainWindow):
         row = rows[self.currentFrame]
 
 
-        ######################## cam 0  ########################
 
-        
+    ################synced info output ############################
+
+        self.videoControlInfoLabel.setText(f"Frame: {self.currentFrame + 1} / {len(rows)}"
+            f"    |    "
+            f"Time: {float(row['timeSec']):.3f} seconds")
+
+
+        infoText = (
+            f"Frame: {self.currentFrame + 1} / {len(rows)}\n"
+            f"Time: {float(row['timeSec']):.3f} seconds\n"
+            f"LiDAR difference: {float(row['lidarDt']):.4f} seconds\n"
+            f"IMU difference: {float(row['imuDt']):.4f} seconds\n"
+            f"Joy difference: {float(row['joyDt']):.4f} seconds\n"
+            f"Joy Axis 0: {row['joyAxis0']}\n"
+            f"Joy Axis 1: {row['joyAxis1']}"
+        )
+
+        self.infoLabel.setText(infoText)
+
+
+
+################################# Camera 0 and 1 Display ########################
+
         camera0Path = row["cam0Path"]
 
         pixmap0 = QPixmap(camera0Path)
@@ -253,9 +349,6 @@ class WINDOW(QMainWindow):
 
             self.camera0Label.setPixmap(pixmap)
 
-
-
-        ######################## cam 1  ########################
 
         camera1Path = row["cam1Path"]
         
@@ -278,22 +371,6 @@ class WINDOW(QMainWindow):
                 pixmap1
             )
 
-
-        ######################## synced data output  ########################
-
-        infoText = (
-            f"Frame: {self.currentFrame + 1} / {len(rows)}\n"
-            f"Time: {float(row['timeSec']):.3f} seconds\n"
-            f"LiDAR difference: {float(row['lidarDt']):.4f} seconds\n"
-            f"IMU difference: {float(row['imuDt']):.4f} seconds\n"
-            f"Joy difference: {float(row['joyDt']):.4f} seconds\n"
-            f"Joy Axis 0: {row['joyAxis0']}\n"
-            f"Joy Axis 1: {row['joyAxis1']}"
-        )
-
-        self.infoLabel.setText(
-            infoText
-        )
 
 
     ###################  previous and next button functions ####################  
@@ -441,6 +518,40 @@ class WINDOW(QMainWindow):
 
 
     ################### timesim error log format ####################  
+
+
+    def viewReport(self):
+                
+        self.reportWindow = QDialog(self, Qt.Window)
+
+        
+        self.reportWindow.setWindowTitle("Timesim Error Logs")
+
+        self.reportWindow.resize(700,500)
+
+
+        reportLayout = QVBoxLayout()
+
+        self.reportText = QTextEdit()
+
+        self.reportText.setReadOnly(True)
+
+
+        if MarkedERRORfile.exists():
+            
+            with MarkedERRORfile.open("r") as file:
+
+                self.reportText.setPlainText(file.read())
+
+        else: 
+            self.reportText.setPlainText("No timesim errors have been marked")
+
+
+        reportLayout.addWidget(self.reportText)
+
+        self.reportWindow.setLayout(reportLayout)
+
+        self.reportWindow.show()
 
 
     def errorMark(self):
