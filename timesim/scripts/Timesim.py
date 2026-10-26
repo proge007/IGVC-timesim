@@ -174,6 +174,10 @@ class WINDOW(QMainWindow):
 
         self.errorButton = QPushButton("Error")
 
+        self.previousERRORButton = QPushButton("Previous Error")
+
+        self.nextERRORButton = QPushButton("Next Error")
+
 
 
         self.playButton.clicked.connect(self.playPause)
@@ -184,6 +188,10 @@ class WINDOW(QMainWindow):
         
         self.errorButton.clicked.connect(self.errorMark)
 
+        self.previousERRORButton.clicked.connect(self.previousError)
+
+        self.nextERRORButton.clicked.connect(self.nextError)
+
 
 
         ButtonLayout.addWidget(self.previousButton)
@@ -193,6 +201,10 @@ class WINDOW(QMainWindow):
         ButtonLayout.addWidget(self.nextButton)
     
         ButtonLayout.addWidget(self.errorButton)
+
+        ButtonLayout.addWidget(self.previousERRORButton)
+
+        ButtonLayout.addWidget(self.nextERRORButton)
 
 
 
@@ -286,6 +298,53 @@ class WINDOW(QMainWindow):
 
     ###################  previous and next button functions ####################  
 
+    def previousError(self):
+        
+        self.pausePlayback()
+
+        previousErrors = []
+
+        for frame in MarkedERRORframes:
+            if frame < self.currentFrame:
+                previousErrors.append(frame)
+
+        if len(previousErrors) == 0:
+
+            print("timesim: no previous marked error")
+            
+            return
+
+        errorFrame = max(previousErrors)
+
+        self.showFrame(errorFrame)
+
+        print("timesim: error frame:", errorFrame + 1)
+
+
+    def nextError(self):
+
+        self.pausePlayback()
+
+        nextErrors = []
+
+        for frame in MarkedERRORframes:
+
+            if frame > self.currentFrame:
+                nextErrors.append(frame)
+
+        if len(nextErrors) == 0:
+
+            print("timesim: no next marked error")
+
+            return
+
+        errorFrame = min(nextErrors)
+
+        self.showFrame(errorFrame)
+
+        print("timesim: error frame:", errorFrame + 1)
+
+
     def playPause(self):
 
         if self.isPlaying:
@@ -357,6 +416,7 @@ class WINDOW(QMainWindow):
         self.scheduleNextFrame()
 
 
+
     def previousFrame(self):
 
         self.pausePlayback()
@@ -366,6 +426,7 @@ class WINDOW(QMainWindow):
             self.showFrame(
                 self.currentFrame - 1
             )
+
 
 
     def nextFrame(self):
