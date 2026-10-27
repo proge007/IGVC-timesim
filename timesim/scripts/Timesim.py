@@ -1,11 +1,11 @@
 import argparse 
-import csv 
 import sys
 from pathlib import Path
 
 
 from PyQt5.QtCore import Qt, QTimer 
 from PyQt5.QtGui import QPixmap 
+from Timesim_data import (loadTimesimData, keepErrorData, deleteErrorData, loadErrorReport)
 
 
 from PyQt5.QtWidgets import (
@@ -25,56 +25,20 @@ from PyQt5.QtWidgets import (
 
 timesimParser = argparse.ArgumentParser()
 
-timesimParser.add_argument(
-    "--syncTIMESIMdata",
-    required=True,
-    help="timesim sync data dict"
-)
+timesimParser.add_argument( "--syncTIMESIMdata", required=True, help="timesim sync data dict")
 
 args = timesimParser.parse_args()
 
-timesimDataDirectory = Path(
-    args.syncTIMESIMdata
-)
+timesimDataDirectory = Path(args.syncTIMESIMdata)
 
+(rows, syncFile, MarkedERRORfile, MarkedERRORframes) = loadTimesimData(timesimDataDirectory)
 
-syncFile = (timesimDataDirectory / "sync-data-timesim.csv")
-
-
-MarkedERRORfile = (timesimDataDirectory / "markedIGVerror.txt")
-
-MarkedERRORframes = []
-
-if MarkedERRORfile.exists():
-    with MarkedERRORfile.open("r") as file:
-        for line in file:
-            if line.startswith("Frame:"):
-
-                frameNUM = int(line.split(":")[1].strip())
-
-                MarkedERRORframes.append(frameNUM - 1)
-
-
-
-if not syncFile.exists():
-    raise FileNotFoundError(f"ERROR: TimeSim sync file not found: {syncFile}")
-
-rows = []
-
-
-with syncFile.open("r") as file:
-    reader = csv.DictReader(file)
-
-    for row in reader:
-        rows.append(row)
-
-if len(rows) ==0:
-    raise RuntimeError("ERROR: timesim sync file contains no frames")
-
+############################## moved code 
 
 print("----Timesim replay data loaded----")
 print("----sync file:", syncFile)
 print("Frames loaded:", len(rows))
+
 
 
 
@@ -262,9 +226,6 @@ class WINDOW(QMainWindow):
         self.deleteButton = QPushButton("Delete")
 
 
-
-
-        
         self.errorButton.clicked.connect(self.errorMark)
 
         self.previousERRORButton.clicked.connect(self.previousError)
@@ -338,7 +299,6 @@ class WINDOW(QMainWindow):
         self.infoLabel.setText(infoText)
 
 
-
 ################################# Camera 0 and 1 Display ########################
 
         camera0Path = row["cam0Path"]
@@ -379,7 +339,6 @@ class WINDOW(QMainWindow):
             self.camera1Label.setPixmap(
                 pixmap1
             )
-
 
 
     ###################  previous and next button functions ####################  
@@ -533,11 +492,9 @@ class WINDOW(QMainWindow):
                 
         self.reportWindow = QDialog(self, Qt.Window)
 
-        
         self.reportWindow.setWindowTitle("Timesim Error Logs")
 
         self.reportWindow.resize(700,500)
-
 
         reportLayout = QVBoxLayout()
 
@@ -545,16 +502,9 @@ class WINDOW(QMainWindow):
 
         self.reportText.setReadOnly(True)
 
+        reportData = loadErrorReport(MarkedERRORfile)
 
-        if MarkedERRORfile.exists():
-            
-            with MarkedERRORfile.open("r") as file:
-
-                self.reportText.setPlainText(file.read())
-
-        else: 
-            self.reportText.setPlainText("No timesim errors have been marked")
-
+        self.reportText.setPlainText(reportData)
 
         reportLayout.addWidget(self.reportText)
 
@@ -565,16 +515,15 @@ class WINDOW(QMainWindow):
 
     def deleteReport(self):
         
-        with MarkedERRORfile.open("w") as file:
-            file.write("")
-        
+        deleteErrorData(MarkedERRORfile)
+
         MarkedERRORframes.clear()
         
         self.errorINFOmark.setText("Marked Errors: 0")
 
         if hasattr(self, "reportText"):
 
-            self.reportText.setPlainText("no  timesim error have been marked")
+            self.reportText.setPlainText("no timesim error have been marked")
 
         print("timesim error log clears")
 
@@ -584,40 +533,20 @@ class WINDOW(QMainWindow):
         self.pausePlayback()
 
         if self.currentFrame in MarkedERRORframes:
+
             print("timesim: frame already marked",self.currentFrame + 1)
 
             return
 
         row = rows[self.currentFrame]
 
-        with MarkedERRORfile.open("a") as file:
+################ moved 
 
-            file.write("----- TimeSim Error Information ----- \n")
-
-            file.write(f"Frame: {self.currentFrame + 1}\n")
-
-            file.write(f"timeSec: {row['timeSec']}\n")
-
-            file.write(f"cam0Timestamp: {row['cam0Timestamp']}\n")
-
-            file.write(f"cam1Timestamp: {row['cam1Timestamp']}\n")
-
-            file.write(f"lidarTimestamp: {row['lidarTimestamp']}\n")
-
-            file.write(f"imuTimestamp: {row['imuTimestamp']}\n")
-
-            file.write(f"joyTimestamp: {row['joyTimestamp']}\n")
-
-            file.write(f"joyAxis0: {row['joyAxis0']}\n")
-
-            file.write(f"joyAxis1: {row['joyAxis1']}\n")
-
-            file.write("\n")
+        keepErrorData(MarkedERRORfile,self.currentFrame + 1, row)
 
         MarkedERRORframes.append(self.currentFrame)
 
         self.errorINFOmark.setText(f"marked errors: {len(MarkedERRORframes)}")
-
 
         print("TimeSim: error marked at frame:", self.currentFrame +1)
 
