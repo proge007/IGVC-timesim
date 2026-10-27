@@ -94,3 +94,37 @@ def loadErrorReport(MarkedERRORfile):
     return "No timesim errors been marked"
 
 
+def framePreviousError(MarkedERRORframes,currentFrame):
+        
+    previousErrors = []
+
+    for frame in MarkedERRORframes:
+
+            if frame < currentFrame:
+                
+                previousErrors.append(frame)
+
+    if len(previousErrors) == 0:
+            
+            return None
+    
+    return max(previousErrors)
+
+
+def frameNextError(MarkedERRORframes,currentFrame):
+
+    nextErrors = []
+
+    for frame in MarkedERRORframes:
+
+        if frame > currentFrame:
+
+            nextErrors.append(frame)
+
+    if len(nextErrors) == 0:
+
+            return None
+
+    return min(nextErrors)
+
+

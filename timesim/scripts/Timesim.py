@@ -5,7 +5,7 @@ from pathlib import Path
 
 from PyQt5.QtCore import Qt, QTimer 
 from PyQt5.QtGui import QPixmap 
-from Timesim_data import (loadTimesimData, keepErrorData, deleteErrorData, loadErrorReport)
+from Timesim_data import (loadTimesimData, keepErrorData, deleteErrorData, loadErrorReport, framePreviousError, frameNextError)
 
 
 from PyQt5.QtWidgets import (
@@ -347,47 +347,28 @@ class WINDOW(QMainWindow):
         
         self.pausePlayback()
 
-        previousErrors = []
+        errorFrame = framePreviousError(MarkedERRORframes,self.currentFrame)
 
-        for frame in MarkedERRORframes:
-            if frame < self.currentFrame:
-                previousErrors.append(frame)
-
-        if len(previousErrors) == 0:
-
-            print("timesim: no previous marked error")
-            
+        if errorFrame is None: 
             return
-
-        errorFrame = max(previousErrors)
 
         self.showFrame(errorFrame)
 
-        print("timesim: error frame:", errorFrame + 1)
+        print("Moved to PREVIOUS error frame:", errorFrame + 1)
 
 
     def nextError(self):
 
         self.pausePlayback()
 
-        nextErrors = []
+        errorFrame = frameNextError(MarkedERRORframes,self.currentFrame)
 
-        for frame in MarkedERRORframes:
-
-            if frame > self.currentFrame:
-                nextErrors.append(frame)
-
-        if len(nextErrors) == 0:
-
-            print("timesim: no next marked error")
-
+        if errorFrame is None: 
             return
-
-        errorFrame = min(nextErrors)
 
         self.showFrame(errorFrame)
 
-        print("timesim: error frame:", errorFrame + 1)
+        print("Moved to NEXT error frame:", errorFrame + 1)
 
 
     def playPause(self):
