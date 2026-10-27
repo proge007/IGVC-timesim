@@ -245,7 +245,7 @@ class WINDOW(QMainWindow):
         mainLayout.addWidget(syncData)
 
 
-############################### Debugging ###############################
+############################### Debugging Control ###############################
 
         debugControl = QGroupBox ("Debug Control: ")
 
@@ -259,6 +259,11 @@ class WINDOW(QMainWindow):
 
         self.reportButton = QPushButton("Report")
 
+        self.deleteButton = QPushButton("Delete")
+
+
+
+
         
         self.errorButton.clicked.connect(self.errorMark)
 
@@ -268,6 +273,8 @@ class WINDOW(QMainWindow):
 
         self.reportButton.clicked.connect(self.viewReport)
 
+        self.deleteButton.clicked.connect(self.deleteReport)
+        
 
         debugControlLayout.addStretch()
 
@@ -279,6 +286,8 @@ class WINDOW(QMainWindow):
         
         debugControlLayout.addWidget(self.reportButton)
 
+        debugControlLayout.addWidget(self.deleteButton)
+        
 
         debugControlLayout.addStretch()
 
@@ -552,6 +561,22 @@ class WINDOW(QMainWindow):
         self.reportWindow.setLayout(reportLayout)
 
         self.reportWindow.show()
+
+
+    def deleteReport(self):
+        
+        with MarkedERRORfile.open("w") as file:
+            file.write("")
+        
+        MarkedERRORframes.clear()
+        
+        self.errorINFOmark.setText("Marked Errors: 0")
+
+        if hasattr(self, "reportText"):
+
+            self.reportText.setPlainText("no  timesim error have been marked")
+
+        print("timesim error log clears")
 
 
     def errorMark(self):
