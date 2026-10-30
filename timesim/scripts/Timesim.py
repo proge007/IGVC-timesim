@@ -6,7 +6,8 @@ from pathlib import Path
 from PyQt5.QtCore import Qt, QTimer 
 from PyQt5.QtGui import QPixmap 
 from Timesim_data import (loadTimesimData, keepErrorData, deleteErrorData, loadErrorReport, 
-                          framePreviousError, frameNextError, dataShowFrame, dataScheduleNextFrame)
+                          framePreviousError, frameNextError, dataShowFrame, dataScheduleNextFrame,
+                          dataPreviousFrame, dataNextFrame, dataStartPlayback, dataPlayNextFrame, dataErrorMark)
 
 
 from PyQt5.QtWidgets import (
@@ -98,7 +99,6 @@ class WINDOW(QMainWindow):
         cameraZero = QGroupBox("Camera 0:")
 
         camera0Layout = QVBoxLayout()
-
 
         self.camera0Label = QLabel()
 
@@ -275,15 +275,12 @@ class WINDOW(QMainWindow):
 
         self.videoSlider.blockSignals(False)
 
-
         (row, frameNum, totalFrames, videoControlInfoLabel, infoText, 
          camera0Path, camera1Path ) = dataShowFrame(rows, self.currentFrame)
-
 
         self.videoControlInfoLabel.setText(videoControlInfoLabel)
 
         self.infoLabel.setText(infoText)
-
 
         pixmap0 = QPixmap(camera0Path)
 
@@ -291,39 +288,24 @@ class WINDOW(QMainWindow):
             self.camera0Label.setText("camera 0 error")
 
         else:
-            pixmap = pixmap0.scaled(
-                400,
-                300,
-                Qt.KeepAspectRatio,
-                Qt.SmoothTransformation
-            )
+            pixmap = pixmap0.scaled(400,300,Qt.KeepAspectRatio,Qt.SmoothTransformation)
 
             self.camera0Label.setPixmap(pixmap)
-
 
         camera1Path = row["cam1Path"]
         
         pixmap1 = QPixmap(camera1Path)
         
         if pixmap1.isNull():    
-            self.camera1Label.setText(
-                "camera 1 error"
-            )
+            self.camera1Label.setText("camera 1 error")
         
         else:
-            pixmap1 = pixmap1.scaled(
-                400,
-                300,
-                Qt.KeepAspectRatio,
-                Qt.SmoothTransformation
-            )
+            pixmap1 = pixmap1.scaled(400,300,Qt.KeepAspectRatio,Qt.SmoothTransformation)
         
-            self.camera1Label.setPixmap(
-                pixmap1
-            )
-
+            self.camera1Label.setPixmap(pixmap1)
 
     ###################  previous and next button functions ####################  
+
 
     def previousError(self):
         
@@ -365,15 +347,18 @@ class WINDOW(QMainWindow):
 
     def startPlayback(self):
 
-        if self.currentFrame >= len(rows) - 1:
-            self.showFrame(0)
+        startFrame = dataStartPlayback(rows, self.currentFrame)
 
+        if startFrame != self.currentFrame:
+
+            self.showFrame(startFrame)
 
         self.isPlaying = True
 
         self.playButton.setText("Pause")
 
         self.scheduleNextFrame()
+
 
 
     def pausePlayback(self):
@@ -385,7 +370,6 @@ class WINDOW(QMainWindow):
         self.playButton.setText("Play")
 
 
-
     def scheduleNextFrame(self):
 
         if not self.isPlaying:
@@ -395,23 +379,16 @@ class WINDOW(QMainWindow):
             self.pausePlayback()
             return
 
-        currentTime = float(
-            rows[self.currentFrame]["timeSec"]
-        )   
+        currentTime = float(rows[self.currentFrame]["timeSec"])   
 
-        nextTime = float(
-            rows[self.currentFrame + 1]["timeSec"]
-        )    
+        nextTime = float(rows[self.currentFrame + 1]["timeSec"])    
 
         delaySeconds = nextTime - currentTime
 
 
-        frameDelay = max(
-            1, int(delaySeconds * 1000)
-        )       
+        frameDelay = max(1, int(delaySeconds * 1000))       
 
         self.timer.start(frameDelay)
-
 
 
     def playNextFrame(self):
@@ -419,7 +396,9 @@ class WINDOW(QMainWindow):
         if not self.isPlaying:
             return
 
-        self.showFrame(self.currentFrame + 1)
+        nextFrame = dataPlayNextFrame(rows, self.currentFrame)
+
+        self.showFrame(nextFrame)
 
         self.scheduleNextFrame()
 
@@ -429,24 +408,18 @@ class WINDOW(QMainWindow):
 
         self.pausePlayback()
 
-        if self.currentFrame > 0:
-
-            self.showFrame(
-                self.currentFrame - 1
-            )
-
+        previousFrame = dataPreviousFrame(self.currentFrame)
+        
+        self.showFrame(previousFrame)
 
 
     def nextFrame(self):
 
         self.pausePlayback()
 
-        if self.currentFrame < len(rows) - 1:
+        nextFrame = dataNextFrame(rows, self.currentFrame)
 
-            self.showFrame(
-                self.currentFrame + 1
-            )
-
+        self.showFrame(nextFrame)
 
     ################### timesim error log format ####################  
 
@@ -495,25 +468,15 @@ class WINDOW(QMainWindow):
 
         self.pausePlayback()
 
-        if self.currentFrame in MarkedERRORframes:
+        errorMarked = dataErrorMark(MarkedERRORfile, MarkedERRORframes, self.currentFrame, rows)
 
-            print("timesim: frame already marked",self.currentFrame + 1)
+        if not errorMarked:
+            
+            print("TimeSim: error marked at frame:", self.currentFrame +1)
 
             return
 
-        row = rows[self.currentFrame]
-
-################ moved 
-
-        keepErrorData(MarkedERRORfile,self.currentFrame + 1, row)
-
-        MarkedERRORframes.append(self.currentFrame)
-
         self.errorINFOmark.setText(f"marked errors: {len(MarkedERRORframes)}")
-
-        print("TimeSim: error marked at frame:", self.currentFrame +1)
-
-
 
     ################### timesim intialization ####################  
 

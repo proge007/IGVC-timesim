@@ -5,16 +5,13 @@ from pathlib import Path
 
 def loadTimesimData(timesimDataDirectory):
 
-
     syncFile = (timesimDataDirectory / "sync-data-timesim.csv")
 
     MarkedERRORfile = (timesimDataDirectory / "markedIGVerror.txt")
 
-
     if not syncFile.exists():
 
         raise FileNotFoundError(f"ERROR: TimeSim sync file not found: {syncFile}")
-
 
     rows = []
 
@@ -30,7 +27,6 @@ def loadTimesimData(timesimDataDirectory):
 
         raise RuntimeError("ERROR: timesim sync file contains no frames")
 
-    
     MarkedERRORframes = []
 
     if MarkedERRORfile.exists():
@@ -44,7 +40,6 @@ def loadTimesimData(timesimDataDirectory):
                     frameNUM = int(line.split(":")[1].strip())
 
                     MarkedERRORframes.append(frameNUM - 1)
-
 
     return (rows, syncFile, MarkedERRORfile, MarkedERRORframes) 
 
@@ -136,7 +131,6 @@ def dataShowFrame(rows, currentFrame):
 
     totalFrames = len(rows)
     
-     
     videoControlInfoLabel = (f"Frame: {frameNum} / {totalFrames}"
         f"    |    "
         f"Time: {float(row['timeSec']):.3f} seconds"
@@ -154,9 +148,7 @@ def dataShowFrame(rows, currentFrame):
 
     camera0Path = row["cam0Path"]
     camera1Path = row["cam1Path"]
-
     return (row, frameNum, totalFrames, videoControlInfoLabel, infoText, camera0Path, camera1Path)
-
 
 
 def dataScheduleNextFrame(rows, currentFrame):
@@ -171,6 +163,59 @@ def dataScheduleNextFrame(rows, currentFrame):
     frameDelay = max(1, int(delaySeconds * 1000))       
 
     return frameDelay
+
+
+def dataPreviousFrame(currentFrame):
+
+    if currentFrame > 0:
+
+        currentFrame = currentFrame - 1
+
+    return currentFrame
+
+
+def dataNextFrame(rows, currentFrame):
+
+    if currentFrame < len(rows) - 1:
+
+        currentFrame = currentFrame + 1
+
+    return currentFrame
+
+
+def dataStartPlayback(rows, currentFrame):
+
+    if currentFrame >= len(rows) - 1:
+
+        currentFrame = 0
+
+    return currentFrame
+
+
+def dataPlayNextFrame(rows, currentFrame):
+
+    if currentFrame < len(rows) - 1:
+
+        currentFrame = currentFrame + 1
+
+    return currentFrame
+
+
+def dataErrorMark(MarkedERRORfile, MarkedERRORframes, currentFrame, rows ):
+
+        if currentFrame in MarkedERRORframes:
+
+            return False
+
+        row = rows[currentFrame]
+
+        keepErrorData(MarkedERRORfile, currentFrame + 1, row)
+
+        MarkedERRORframes.append(currentFrame)
+
+        return True
+
+
 
 
 
