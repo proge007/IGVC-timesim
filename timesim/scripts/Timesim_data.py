@@ -216,13 +216,12 @@ def dataErrorMark(MarkedERRORfile, MarkedERRORframes, currentFrame, rows ):
         return True
 
 
+def dataDeleteReport(MarkedERRORfile, MarkedERRORframes):
+        
+        deleteErrorData(MarkedERRORfile)
 
+        MarkedERRORframes.clear()
 
-
-
-
-
-
-
+        return len(MarkedERRORframes)
 
 

@@ -7,7 +7,8 @@ from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QPixmap 
 from Timesim_data import (loadTimesimData, keepErrorData, deleteErrorData, loadErrorReport, 
                           framePreviousError, frameNextError, dataShowFrame, dataScheduleNextFrame,
-                          dataPreviousFrame, dataNextFrame, dataStartPlayback, dataPlayNextFrame, dataErrorMark)
+                          dataPreviousFrame, dataNextFrame, dataStartPlayback, dataPlayNextFrame, 
+                        dataErrorMark, dataDeleteReport)
 
 
 from PyQt5.QtWidgets import (
@@ -451,11 +452,9 @@ class WINDOW(QMainWindow):
 
     def deleteReport(self):
         
-        deleteErrorData(MarkedERRORfile)
+        markedErrorCount = dataDeleteReport(MarkedERRORfile, MarkedERRORframes)
 
-        MarkedERRORframes.clear()
-        
-        self.errorINFOmark.setText("Marked Errors: 0")
+        self.errorINFOmark.setText(f"Marked Errors: {markedErrorCount}")
 
         if hasattr(self, "reportText"):
 
