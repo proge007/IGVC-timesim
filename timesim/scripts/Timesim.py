@@ -5,7 +5,8 @@ from pathlib import Path
 
 from PyQt5.QtCore import Qt, QTimer 
 from PyQt5.QtGui import QPixmap 
-from Timesim_data import (loadTimesimData, keepErrorData, deleteErrorData, loadErrorReport, framePreviousError, frameNextError)
+from Timesim_data import (loadTimesimData, keepErrorData, deleteErrorData, loadErrorReport, 
+                          framePreviousError, frameNextError, dataShowFrame, dataScheduleNextFrame)
 
 
 from PyQt5.QtWidgets import (
@@ -263,45 +264,26 @@ class WINDOW(QMainWindow):
         
         self.resize(1000,900)
 
+
     def showFrame(self, frameNUM):
 
         self.currentFrame = frameNUM
 
-        
         self.videoSlider.blockSignals(True)
 
         self.videoSlider.setValue(self.currentFrame)
 
         self.videoSlider.blockSignals(False)
 
-            
-        row = rows[self.currentFrame]
+
+        (row, frameNum, totalFrames, videoControlInfoLabel, infoText, 
+         camera0Path, camera1Path ) = dataShowFrame(rows, self.currentFrame)
 
 
-
-    ################synced info output ############################
-
-        self.videoControlInfoLabel.setText(f"Frame: {self.currentFrame + 1} / {len(rows)}"
-            f"    |    "
-            f"Time: {float(row['timeSec']):.3f} seconds")
-
-
-        infoText = (
-            f"Frame: {self.currentFrame + 1} / {len(rows)}\n"
-            f"Time: {float(row['timeSec']):.3f} seconds\n"
-            f"LiDAR difference: {float(row['lidarDt']):.4f} seconds\n"
-            f"IMU difference: {float(row['imuDt']):.4f} seconds\n"
-            f"Joy difference: {float(row['joyDt']):.4f} seconds\n"
-            f"Joy Axis 0: {row['joyAxis0']}\n"
-            f"Joy Axis 1: {row['joyAxis1']}"
-        )
+        self.videoControlInfoLabel.setText(videoControlInfoLabel)
 
         self.infoLabel.setText(infoText)
 
-
-################################# Camera 0 and 1 Display ########################
-
-        camera0Path = row["cam0Path"]
 
         pixmap0 = QPixmap(camera0Path)
 

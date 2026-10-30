@@ -128,3 +128,56 @@ def frameNextError(MarkedERRORframes,currentFrame):
     return min(nextErrors)
 
 
+def dataShowFrame(rows, currentFrame):
+
+    row = rows[currentFrame]
+
+    frameNum = currentFrame + 1
+
+    totalFrames = len(rows)
+    
+     
+    videoControlInfoLabel = (f"Frame: {frameNum} / {totalFrames}"
+        f"    |    "
+        f"Time: {float(row['timeSec']):.3f} seconds"
+        )
+
+    infoText = (
+        f"Frame: {frameNum} / {totalFrames}\n"
+        f"Time: {float(row['timeSec']):.3f} seconds\n"
+        f"LiDAR difference: {float(row['lidarDt']):.4f} seconds\n"
+        f"IMU difference: {float(row['imuDt']):.4f} seconds\n"
+        f"Joy difference: {float(row['joyDt']):.4f} seconds\n"
+        f"Joy Axis 0: {row['joyAxis0']}\n"
+        f"Joy Axis 1: {row['joyAxis1']}"
+    )
+
+    camera0Path = row["cam0Path"]
+    camera1Path = row["cam1Path"]
+
+    return (row, frameNum, totalFrames, videoControlInfoLabel, infoText, camera0Path, camera1Path)
+
+
+
+def dataScheduleNextFrame(rows, currentFrame):
+
+    currentTime = float(rows[currentFrame]["timeSec"])   
+
+    nextTime = float(rows[currentFrame + 1]["timeSec"])    
+
+    delaySeconds = nextTime - currentTime
+
+
+    frameDelay = max(1, int(delaySeconds * 1000))       
+
+    return frameDelay
+
+
+
+
+
+
+
+
+
+
