@@ -1,14 +1,11 @@
-import argparse 
 import sys
-from pathlib import Path
-
 
 from PyQt5.QtCore import Qt, QTimer 
 from PyQt5.QtGui import QPixmap 
 from Timesim_data import (loadTimesimData, keepErrorData, deleteErrorData, loadErrorReport, 
                           framePreviousError, frameNextError, dataShowFrame, dataScheduleNextFrame,
                           dataPreviousFrame, dataNextFrame, dataStartPlayback, dataPlayNextFrame, 
-                        dataErrorMark, dataDeleteReport)
+                        dataErrorMark, dataDeleteReport, dataTimesimDirectory)
 
 
 from PyQt5.QtWidgets import (
@@ -25,14 +22,7 @@ from PyQt5.QtWidgets import (
     QGroupBox
 )
 
-
-timesimParser = argparse.ArgumentParser()
-
-timesimParser.add_argument( "--syncTIMESIMdata", required=True, help="timesim sync data dict")
-
-args = timesimParser.parse_args()
-
-timesimDataDirectory = Path(args.syncTIMESIMdata)
+timesimDataDirectory = dataTimesimDirectory()
 
 (rows, syncFile, MarkedERRORfile, MarkedERRORframes) = loadTimesimData(timesimDataDirectory)
 
@@ -482,6 +472,7 @@ class WINDOW(QMainWindow):
 application = QApplication(sys.argv)
             
 timesimWindow = WINDOW()
+
 timesimWindow.show()
             
 sys.exit(application.exec_())

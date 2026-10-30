@@ -1,13 +1,27 @@
 import csv
+import argparse
+
 from pathlib import Path 
 
 
+def dataTimesimDirectory():
+     
+    timesimParser = argparse.ArgumentParser()
 
-def loadTimesimData(timesimDataDirectory):
+    timesimParser.add_argument( "--syncTIMESIMdata", required=True, help="timesim sync data dict")
 
-    syncFile = (timesimDataDirectory / "sync-data-timesim.csv")
+    args = timesimParser.parse_args()
 
-    MarkedERRORfile = (timesimDataDirectory / "markedIGVerror.txt")
+    timesimDATADirectory = Path(args.syncTIMESIMdata)
+
+    return timesimDATADirectory
+
+
+def loadTimesimData(timesimDATADirectory):
+
+    syncFile = (timesimDATADirectory / "sync-data-timesim.csv")
+
+    MarkedERRORfile = (timesimDATADirectory / "markedIGVerror.txt")
 
     if not syncFile.exists():
 
