@@ -147,8 +147,7 @@ def dataShowFrame(rows, currentFrame):
     
     videoControlInfoLabel = (f"Frame: {frameNum} / {totalFrames}"
         f"    |    "
-        f"Time: {float(row['timeSec']):.3f} seconds"
-        )
+        f"Time: {float(row['timeSec']):.3f} seconds")
 
     infoText = (
         f"Frame: {frameNum} / {totalFrames}\n"
@@ -162,10 +161,13 @@ def dataShowFrame(rows, currentFrame):
 
     camera0Path = row["cam0Path"]
     camera1Path = row["cam1Path"]
-    return (row, frameNum, totalFrames, videoControlInfoLabel, infoText, camera0Path, camera1Path)
+    return (videoControlInfoLabel, infoText, camera0Path, camera1Path)
 
 
 def dataScheduleNextFrame(rows, currentFrame):
+
+    if currentFrame >= len(rows) - 1:
+        return None
 
     currentTime = float(rows[currentFrame]["timeSec"])   
 
@@ -173,9 +175,7 @@ def dataScheduleNextFrame(rows, currentFrame):
 
     delaySeconds = nextTime - currentTime
 
-
     frameDelay = max(1, int(delaySeconds * 1000))       
-
     return frameDelay
 
 
@@ -237,5 +237,3 @@ def dataDeleteReport(MarkedERRORfile, MarkedERRORframes):
         MarkedERRORframes.clear()
 
         return len(MarkedERRORframes)
-
-

@@ -2,38 +2,18 @@ import sys
 
 from PyQt5.QtCore import Qt, QTimer 
 from PyQt5.QtGui import QPixmap 
-from Timesim_data import (loadTimesimData, keepErrorData, deleteErrorData, loadErrorReport, 
-                          framePreviousError, frameNextError, dataShowFrame, dataScheduleNextFrame,
-                          dataPreviousFrame, dataNextFrame, dataStartPlayback, dataPlayNextFrame, 
-                        dataErrorMark, dataDeleteReport, dataTimesimDirectory)
 
+from Timesim_data import (loadTimesimData, loadErrorReport, 
+framePreviousError, frameNextError, dataShowFrame, dataScheduleNextFrame,
+dataPreviousFrame, dataNextFrame, dataStartPlayback, dataPlayNextFrame, 
+dataErrorMark, dataDeleteReport, dataTimesimDirectory)
 
-from PyQt5.QtWidgets import (
-    QApplication,
-    QHBoxLayout,
-    QLabel,
-    QMainWindow,
-    QVBoxLayout,
-    QWidget,
-    QPushButton,
-    QSlider,
-    QDialog,
-    QTextEdit,
-    QGroupBox
-)
+from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QLabel, QMainWindow,
+    QVBoxLayout, QWidget, QPushButton, QSlider, QDialog, QTextEdit, QGroupBox)
 
 timesimDataDirectory = dataTimesimDirectory()
 
 (rows, syncFile, MarkedERRORfile, MarkedERRORframes) = loadTimesimData(timesimDataDirectory)
-
-############################## moved code 
-
-print("----Timesim replay data loaded----")
-print("----sync file:", syncFile)
-print("Frames loaded:", len(rows))
-
-
-
 
 class WINDOW(QMainWindow):
 
@@ -44,11 +24,9 @@ class WINDOW(QMainWindow):
 
         self.errorINFOmark.setAlignment(Qt.AlignCenter)
 
-
         self.setWindowTitle("TimeSim")
         
         self.currentFrame = 0
-
 
         self.isPlaying = False
         
@@ -58,14 +36,12 @@ class WINDOW(QMainWindow):
 
         self.timer.timeout.connect(self.playNextFrame)
 
-
         mainWidget = QWidget()
         mainLayout = QVBoxLayout()
 
-        
         mainWidget.setLayout(mainLayout)
+    
         self.setCentralWidget(mainWidget)
-
 
 ######################### timesim window topsection ###################################
 
@@ -82,8 +58,8 @@ class WINDOW(QMainWindow):
 
         mainLayout.addLayout(topLayout)
 
-
 ##################################### camera layout #################################
+
 
         cameraLayout = QHBoxLayout()
 
@@ -183,9 +159,9 @@ class WINDOW(QMainWindow):
 
         mainLayout.addWidget(videoControl)
 
-
 ############################### Syned Data text ###############################
   
+
         syncData = QGroupBox("Sync Data:")
 
         syncDataLayout = QVBoxLayout()
@@ -200,8 +176,8 @@ class WINDOW(QMainWindow):
 
         mainLayout.addWidget(syncData)
 
-
 ############################### Debugging Control ###############################
+
 
         debugControl = QGroupBox ("Debug Control: ")
 
@@ -266,8 +242,7 @@ class WINDOW(QMainWindow):
 
         self.videoSlider.blockSignals(False)
 
-        (row, frameNum, totalFrames, videoControlInfoLabel, infoText, 
-         camera0Path, camera1Path ) = dataShowFrame(rows, self.currentFrame)
+        (videoControlInfoLabel, infoText, camera0Path, camera1Path ) = dataShowFrame(rows, self.currentFrame)
 
         self.videoControlInfoLabel.setText(videoControlInfoLabel)
 
@@ -282,8 +257,6 @@ class WINDOW(QMainWindow):
             pixmap = pixmap0.scaled(400,300,Qt.KeepAspectRatio,Qt.SmoothTransformation)
 
             self.camera0Label.setPixmap(pixmap)
-
-        camera1Path = row["cam1Path"]
         
         pixmap1 = QPixmap(camera1Path)
         
@@ -309,8 +282,6 @@ class WINDOW(QMainWindow):
 
         self.showFrame(errorFrame)
 
-        print("Moved to PREVIOUS error frame:", errorFrame + 1)
-
 
     def nextError(self):
 
@@ -323,8 +294,6 @@ class WINDOW(QMainWindow):
 
         self.showFrame(errorFrame)
 
-        print("Moved to NEXT error frame:", errorFrame + 1)
-
 
     def playPause(self):
 
@@ -333,7 +302,6 @@ class WINDOW(QMainWindow):
 
         else:
             self.startPlayback()
-
 
 
     def startPlayback(self):
@@ -351,7 +319,6 @@ class WINDOW(QMainWindow):
         self.scheduleNextFrame()
 
 
-
     def pausePlayback(self):
 
         self.isPlaying = False
@@ -366,18 +333,11 @@ class WINDOW(QMainWindow):
         if not self.isPlaying:
             return
 
-        if self.currentFrame >= len(rows) - 1:
+        frameDelay = dataScheduleNextFrame(rows, self.currentFrame)       
+
+        if frameDelay is None:
             self.pausePlayback()
             return
-
-        currentTime = float(rows[self.currentFrame]["timeSec"])   
-
-        nextTime = float(rows[self.currentFrame + 1]["timeSec"])    
-
-        delaySeconds = nextTime - currentTime
-
-
-        frameDelay = max(1, int(delaySeconds * 1000))       
 
         self.timer.start(frameDelay)
 
@@ -392,7 +352,6 @@ class WINDOW(QMainWindow):
         self.showFrame(nextFrame)
 
         self.scheduleNextFrame()
-
 
 
     def previousFrame(self):
@@ -448,9 +407,8 @@ class WINDOW(QMainWindow):
 
         if hasattr(self, "reportText"):
 
-            self.reportText.setPlainText("no timesim error have been marked")
+          self.reportText.setPlainText("no timesim error have been marked")
 
-        print("timesim error log clears")
 
 
     def errorMark(self):
@@ -460,12 +418,12 @@ class WINDOW(QMainWindow):
         errorMarked = dataErrorMark(MarkedERRORfile, MarkedERRORframes, self.currentFrame, rows)
 
         if not errorMarked:
-            
-            print("TimeSim: error marked at frame:", self.currentFrame +1)
-
             return
+        
+        self.errorINFOmark.setText(f"Marked Errors: {len(MarkedERRORframes)}")
+            
 
-        self.errorINFOmark.setText(f"marked errors: {len(MarkedERRORframes)}")
+
 
     ################### timesim intialization ####################  
 
