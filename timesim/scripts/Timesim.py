@@ -1,17 +1,15 @@
 import sys
 
-from PyQt5.QtCore import Qt, QTimer 
-from PyQt5.QtGui import QPixmap 
+from PyQt5.QtCore import (Qt, QTimer) 
 
 from Timesim_data import (loadTimesimData, loadErrorReport, 
 framePreviousError, frameNextError, dataShowFrame, dataScheduleNextFrame,
 dataPreviousFrame, dataNextFrame, dataStartPlayback, dataPlayNextFrame, 
 dataErrorMark, dataDeleteReport, dataTimesimDirectory)
 
-from Timesim_display import (displayWindow)
+from Timesim_display import (displayWindow, displayShowFrame, displayViewReport)
 
-from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QLabel, QMainWindow,
-    QVBoxLayout, QWidget, QPushButton, QSlider, QDialog, QTextEdit, QGroupBox)
+from PyQt5.QtWidgets import (QApplication, QLabel, QMainWindow)
 
 timesimDataDirectory = dataTimesimDirectory()
 
@@ -62,25 +60,7 @@ class WINDOW(QMainWindow):
 
         self.infoLabel.setText(infoText)
 
-        pixmap0 = QPixmap(camera0Path)
-
-        if pixmap0.isNull():
-            self.camera0Label.setText("camera 0 error")
-
-        else:
-            pixmap = pixmap0.scaled(400,300,Qt.KeepAspectRatio,Qt.SmoothTransformation)
-
-            self.camera0Label.setPixmap(pixmap)
-        
-        pixmap1 = QPixmap(camera1Path)
-        
-        if pixmap1.isNull():    
-            self.camera1Label.setText("camera 1 error")
-        
-        else:
-            pixmap1 = pixmap1.scaled(400,300,Qt.KeepAspectRatio,Qt.SmoothTransformation)
-        
-            self.camera1Label.setPixmap(pixmap1)
+        displayShowFrame(self,camera0Path,camera1Path)
 
 
     ###################  previous and next button functions ####################  
@@ -189,29 +169,11 @@ class WINDOW(QMainWindow):
 ####################### timesim error log format ####################  
 
     def viewReport(self):
-                
-        self.reportWindow = QDialog(self, Qt.Window)
-
-        self.reportWindow.setWindowTitle("Timesim Error Logs")
-
-        self.reportWindow.resize(700,500)
-
-        reportLayout = QVBoxLayout()
-
-        self.reportText = QTextEdit()
-
-        self.reportText.setReadOnly(True)
 
         reportData = loadErrorReport(MarkedERRORfile)
 
-        self.reportText.setPlainText(reportData)
-
-        reportLayout.addWidget(self.reportText)
-
-        self.reportWindow.setLayout(reportLayout)
-
-        self.reportWindow.show()
-
+        displayViewReport(self,reportData)
+                
 
     def deleteReport(self):
         

@@ -1,18 +1,20 @@
 from PyQt5.QtCore import Qt 
 
-from PyQt5.QtWidgets import (QApplication, QHBoxLayout, QLabel, QMainWindow,
-    QVBoxLayout, QWidget, QPushButton, QSlider, QDialog, QTextEdit, QGroupBox)
+from PyQt5.QtGui import QPixmap
+
+from PyQt5.QtWidgets import (QHBoxLayout, QLabel, QVBoxLayout, QWidget,
+QPushButton, QSlider, QDialog, QTextEdit, QGroupBox)
 
 
-def displayWindow(window, rows):
+def displayWindow(display, rows):
 
-        window.mainWidget = QWidget()
+        display.mainWidget = QWidget()
 
-        window.mainLayout = QVBoxLayout()
+        display.mainLayout = QVBoxLayout()
 
-        window.mainWidget.setLayout(window.mainLayout)
+        display.mainWidget.setLayout(display.mainLayout)
     
-        window.setCentralWidget(window.mainWidget)
+        display.setCentralWidget(display.mainWidget)
 
 
 ######################### timesim window topsection ###################################
@@ -25,9 +27,9 @@ def displayWindow(window, rows):
 
         topLayout.addStretch()
 
-        topLayout.addWidget(window.errorINFOmark)
+        topLayout.addWidget(display.errorINFOmark)
 
-        window.mainLayout.addLayout(topLayout)
+        display.mainLayout.addLayout(topLayout)
 
 
 ##################################### camera layout #################################
@@ -38,12 +40,12 @@ def displayWindow(window, rows):
 
         camera0Layout = QVBoxLayout()
 
-        window.camera0Label = QLabel()
+        display.camera0Label = QLabel()
 
-        window.camera0Label.setAlignment(Qt.AlignCenter)
+        display.camera0Label.setAlignment(Qt.AlignCenter)
 
 
-        camera0Layout.addWidget(window.camera0Label)
+        camera0Layout.addWidget(display.camera0Label)
 
         cameraZero.setLayout(camera0Layout)
 
@@ -53,11 +55,11 @@ def displayWindow(window, rows):
         camera1Layout = QVBoxLayout()
 
 
-        window.camera1Label = QLabel()
+        display.camera1Label = QLabel()
 
-        window.camera1Label.setAlignment(Qt.AlignCenter)
+        display.camera1Label.setAlignment(Qt.AlignCenter)
 
-        camera1Layout.addWidget(window.camera1Label)
+        camera1Layout.addWidget(display.camera1Label)
 
         cameraOne.setLayout(camera1Layout)
 
@@ -66,134 +68,179 @@ def displayWindow(window, rows):
 
         cameraLayout.addWidget(cameraOne)
 
-        window.mainLayout.addLayout(cameraLayout)
+        display.mainLayout.addLayout(cameraLayout)
 
 
 ########################## timesim video control #############################
 
-        window.videoControl = QGroupBox("Video Controls:")
+        display.videoControl = QGroupBox("Video Controls:")
 
-        window.videoControlLayout = QVBoxLayout()
+        display.videoControlLayout = QVBoxLayout()
 
-        window.videoControlInfoLabel = QLabel()
-
-
-        window.videoControlInfoLabel.setAlignment(Qt.AlignCenter)
-
-        window.videoControlLayout.addWidget(window.videoControlInfoLabel)
+        display.videoControlInfoLabel = QLabel()
 
 
-        window.videoSlider = QSlider(Qt.Horizontal)
+        display.videoControlInfoLabel.setAlignment(Qt.AlignCenter)
+
+        display.videoControlLayout.addWidget(display.videoControlInfoLabel)
+
+
+        display.videoSlider = QSlider(Qt.Horizontal)
         
-        window.videoSlider.setMinimum(0)
+        display.videoSlider.setMinimum(0)
         
-        window.videoSlider.setMaximum(len(rows) - 1)
+        display.videoSlider.setMaximum(len(rows) - 1)
         
-        window.videoSlider.valueChanged.connect(window.showFrame)
+        display.videoSlider.valueChanged.connect(display.showFrame)
         
-        window.videoSlider.sliderPressed.connect(window.pausePlayback)
+        display.videoSlider.sliderPressed.connect(display.pausePlayback)
         
-        window.videoControlLayout.addWidget(window.videoSlider)
+        display.videoControlLayout.addWidget(display.videoSlider)
 
 
-        window.videoControlButtonLayout = QHBoxLayout()
+        display.videoControlButtonLayout = QHBoxLayout()
         
-        window.previousButton = QPushButton("Previous")
+        display.previousButton = QPushButton("Previous")
         
-        window.playButton = QPushButton("Play")
+        display.playButton = QPushButton("Play")
 
-        window.nextButton = QPushButton("Next")
-
-
-        window.previousButton.clicked.connect(window.previousFrame)
-
-        window.playButton.clicked.connect(window.playPause)
-
-        window.nextButton.clicked.connect(window.nextFrame)
+        display.nextButton = QPushButton("Next")
 
 
-        window.videoControlButtonLayout.addStretch()
+        display.previousButton.clicked.connect(display.previousFrame)
 
-        window.videoControlButtonLayout.addWidget(window.previousButton)
+        display.playButton.clicked.connect(display.playPause)
 
-        window.videoControlButtonLayout.addWidget(window.playButton)
-
-        window.videoControlButtonLayout.addWidget(window.nextButton)
+        display.nextButton.clicked.connect(display.nextFrame)
 
 
-        window.videoControlButtonLayout.addStretch()
+        display.videoControlButtonLayout.addStretch()
 
-        window.videoControlLayout.addLayout(window.videoControlButtonLayout)
+        display.videoControlButtonLayout.addWidget(display.previousButton)
 
-        window.videoControl.setLayout(window.videoControlLayout)
+        display.videoControlButtonLayout.addWidget(display.playButton)
 
-     
+        display.videoControlButtonLayout.addWidget(display.nextButton)
+
+
+        display.videoControlButtonLayout.addStretch()
+
+        display.videoControlLayout.addLayout(display.videoControlButtonLayout)
+
+        display.videoControl.setLayout(display.videoControlLayout)
+        
 
 ############################### Syned Data text ###############################
   
-        window.syncData = QGroupBox("Sync Data:")
+        display.syncData = QGroupBox("Sync Data:")
 
-        window.syncDataLayout = QVBoxLayout()
+        display.syncDataLayout = QVBoxLayout()
 
-        window.infoLabel = QLabel()
+        display.infoLabel = QLabel()
 
-        window.infoLabel.setAlignment(Qt.AlignCenter)
+        display.infoLabel.setAlignment(Qt.AlignCenter)
 
-        window.syncDataLayout.addWidget(window.infoLabel)
+        display.syncDataLayout.addWidget(display.infoLabel)
 
-        window.syncData.setLayout(window.syncDataLayout)
+        display.syncData.setLayout(display.syncDataLayout)
 
-        window.mainLayout.addWidget(window.syncData)        
+        display.mainLayout.addWidget(display.syncData)        
 
-        window.mainLayout.addWidget(window.videoControl)        
+        display.mainLayout.addWidget(display.videoControl)        
 
 
 ############################### Debugging Control ###############################
 
-        window.debugControl = QGroupBox ("Debug Control: ")
+        display.debugControl = QGroupBox ("Debug Control: ")
 
-        window.debugControlLayout = QHBoxLayout()
+        display.debugControlLayout = QHBoxLayout()
 
-        window.errorButton = QPushButton("Error")
+        display.errorButton = QPushButton("Error")
 
-        window.previousERRORButton = QPushButton("Previous Error")
+        display.previousERRORButton = QPushButton("Previous Error")
 
-        window.nextERRORButton = QPushButton("Next Error")
+        display.nextERRORButton = QPushButton("Next Error")
 
-        window.reportButton = QPushButton("Report")
+        display.reportButton = QPushButton("Report")
 
-        window.deleteButton = QPushButton("Delete")
-
-
-        window.errorButton.clicked.connect(window.errorMark)
-
-        window.previousERRORButton.clicked.connect(window.previousError)
-
-        window.nextERRORButton.clicked.connect(window.nextError)
-
-        window.reportButton.clicked.connect(window.viewReport)
-
-        window.deleteButton.clicked.connect(window.deleteReport)
+        display.deleteButton = QPushButton("Delete")
 
 
-        window.debugControlLayout.addStretch()
+        display.errorButton.clicked.connect(display.errorMark)
 
-        window.debugControlLayout.addWidget(window.errorButton)
+        display.previousERRORButton.clicked.connect(display.previousError)
 
-        window.debugControlLayout.addWidget(window.previousERRORButton)
+        display.nextERRORButton.clicked.connect(display.nextError)
 
-        window.debugControlLayout.addWidget(window.nextERRORButton)
+        display.reportButton.clicked.connect(display.viewReport)
+
+        display.deleteButton.clicked.connect(display.deleteReport)
+
+
+        display.debugControlLayout.addStretch()
+
+        display.debugControlLayout.addWidget(display.errorButton)
+
+        display.debugControlLayout.addWidget(display.previousERRORButton)
+
+        display.debugControlLayout.addWidget(display.nextERRORButton)
         
-        window.debugControlLayout.addWidget(window.reportButton)
+        display.debugControlLayout.addWidget(display.reportButton)
 
-        window.debugControlLayout.addWidget(window.deleteButton)
+        display.debugControlLayout.addWidget(display.deleteButton)
         
 
-        window.debugControlLayout.addStretch()
+        display.debugControlLayout.addStretch()
 
-        window.debugControl.setLayout(window.debugControlLayout)
+        display.debugControl.setLayout(display.debugControlLayout)
 
-        window.mainLayout.addWidget(window.debugControl)
+        display.mainLayout.addWidget(display.debugControl)
 
 
-        window.resize(1000,900)
+        display.resize(1000,900)
+
+
+def displayShowFrame(display, camera0Path, camera1Path):
+
+        pixmap0 = QPixmap(camera0Path)
+        
+        if pixmap0.isNull():
+                display.camera0Label.setText("camera 0 error")
+        
+        else:
+                pixmap0 = pixmap0.scaled(400,300,Qt.KeepAspectRatio,Qt.SmoothTransformation)
+        
+                display.camera0Label.setPixmap(pixmap0)
+                
+        pixmap1 = QPixmap(camera1Path)
+                
+        if pixmap1.isNull():    
+                display.camera1Label.setText("camera 1 error")
+                
+        else:
+                pixmap1 = pixmap1.scaled(400,300,Qt.KeepAspectRatio,Qt.SmoothTransformation)
+                
+                display.camera1Label.setPixmap(pixmap1)
+
+
+def displayViewReport(display, reportData):
+        
+        display.reportWindow = QDialog(display, Qt.Window)
+        
+        display.reportWindow.setWindowTitle("Timesim Error Logs")
+        
+        display.reportWindow.resize(700,500)
+        
+        reportLayout = QVBoxLayout()
+        
+        display.reportText = QTextEdit()
+        
+        display.reportText.setReadOnly(True)
+                
+        display.reportText.setPlainText(reportData)
+
+        reportLayout.addWidget(display.reportText)
+        
+        display.reportWindow.setLayout(reportLayout)
+        
+        display.reportWindow.show()
