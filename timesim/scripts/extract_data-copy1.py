@@ -34,16 +34,13 @@ CAMERA_TOPICS = [
     "/usb_cam_1/image_raw"
 ]
 
-
-
-
 LIDAR_TOPIC = "/scan"
 IMU_TOPIC = "/imu/data"
 CONTROL_TOPIC = "/joy"
 
 
-###for quick test
-MAX_CAM0_FRAMES = 1500
+### for quick testing of timesim purposes:
+MAX_CAM0_FRAMES = None
 
 
 #DATASET_DIR = "dataset/05_28_27"
@@ -125,10 +122,13 @@ while reader.has_next():
 
         image_counts[topic] += 1
 
-        ###added for testing
-        if image_counts[topic] >= MAX_CAM0_FRAMES:
-           print("test extraction frames limits completed")
-           break
+
+
+    ### for quick testing of timesim purposes:
+        if MAX_CAM0_FRAMES is not None and image_counts[topic] >= MAX_CAM0_FRAMES:
+            break
+
+
 
     elif topic == "/usb_cam_1/image_raw":
 

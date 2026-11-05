@@ -1,15 +1,29 @@
 import argparse 
 import csv 
 from pathlib import Path
+from bisect import bisect_left
 
 import numpy as np 
 
 
+
 def nearestTimestamp(target, timestamps):
-    return min(
-        timestamps, 
-        key=lambda timestamp: abs(timestamp - target)
-    )
+
+    index = bisect_left(timestamps, target)
+
+    if index == 0:
+        return timestamps[0]
+
+    if index == len(timestamps):
+        return timestamps[-1]
+    
+    before = timestamps[index - 1]
+
+    after = timestamps[index]
+
+    if abs(after - target) <  abs(target - before):
+        return after
+    return before 
 
 
 def loadData(dataDir, fileName):
@@ -38,10 +52,16 @@ imu = loadData(timesimDATAdirectory, "imu.npy")
 joy = loadData(timesimDATAdirectory, "joy.npy")
 
 
+cam0Times = sorted(cam0.keys())
+cam1Times = sorted(cam1.keys())
+lidarTimes = sorted(lidar.keys())
+imuTimes = sorted(imu.keys())
+joyTimes = sorted(joy.keys())
+
 
 outputFile = timesimDATAdirectory / "sync-data-timesim.csv"
 
-firstCam0Time = min(cam0.keys())
+firstCam0Time = cam0Times[0]
 
 
 with outputFile.open("w", newline="") as file:
@@ -66,17 +86,15 @@ with outputFile.open("w", newline="") as file:
     ])
 
 
+    for cam0Time in cam0Times:
 
-    for cam0Time in sorted(cam0.keys()):
+        cam1Time = nearestTimestamp(cam0Time,cam1Times)   
 
-        cam1Time = nearestTimestamp(cam0Time,cam1)   
+        lidarTime = nearestTimestamp(cam0Time,lidarTimes)
 
-        lidarTime = nearestTimestamp(cam0Time,lidar)
+        imuTime = nearestTimestamp(cam0Time,imuTimes)
 
-        imuTime = nearestTimestamp(cam0Time,imu)
-
-        joyTime = nearestTimestamp(cam0Time,joy)
-
+        joyTime = nearestTimestamp(cam0Time,joyTimes)
 
         relativeTime = cam0Time - firstCam0Time
 
