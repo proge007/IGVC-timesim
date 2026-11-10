@@ -24,7 +24,7 @@ def dataTimesimDirectory():
 
     timesimDATADirectory = Path(args.syncTIMESIMdata)
 
-    return timesimDATADirector y
+    return timesimDATADirectory
 
 
 def loadTimesimData(timesimDATADirectory):
