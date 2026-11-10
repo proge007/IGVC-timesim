@@ -3,7 +3,17 @@ import argparse
 
 from pathlib import Path 
 
+# Welcome Timesim code:
+# # This is a input visualization and replay system for the IGV project
+#  this takes data recorded during a IGV run, extracts all the frames and senor data then 
+#  allows the team to replay what occured during the run.
+# 
+# In short this allows us to view the synchronized senory data and camera frames all in one 
+# to find all unusally errors. 
+# 
+# #
 
+  
 def dataTimesimDirectory():
      
     timesimParser = argparse.ArgumentParser()
@@ -14,7 +24,7 @@ def dataTimesimDirectory():
 
     timesimDATADirectory = Path(args.syncTIMESIMdata)
 
-    return timesimDATADirectory
+    return timesimDATADirector y
 
 
 def loadTimesimData(timesimDATADirectory):
