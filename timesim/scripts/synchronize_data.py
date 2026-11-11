@@ -6,10 +6,15 @@ from bisect import bisect_left
 import numpy as np 
 
 
-
 def nearestTimestamp(target, timestamps):
 
+
+    if len(timestamps) == 0:
+
+        raise RuntimeError("ERROR: no timestamps available for sync")
+
     index = bisect_left(timestamps, target)
+
 
     if index == 0:
         return timestamps[0]
@@ -23,6 +28,7 @@ def nearestTimestamp(target, timestamps):
 
     if abs(after - target) <  abs(target - before):
         return after
+    
     return before 
 
 
@@ -42,22 +48,32 @@ timesimParser.add_argument(
 
 args = timesimParser.parse_args()
 
+
 timesimDATAdirectory = Path(args.syncTIMESIMdata)
 
-
 cam0 = loadData(timesimDATAdirectory, "cam0.npy")
-cam1 = loadData(timesimDATAdirectory, "cam1.npy")
-lidar = loadData(timesimDATAdirectory, "lidar.npy")
-imu = loadData(timesimDATAdirectory, "imu.npy")
-joy = loadData(timesimDATAdirectory, "joy.npy")
-
-
 cam0Times = sorted(cam0.keys())
+
+cam1 = loadData(timesimDATAdirectory, "cam1.npy")
 cam1Times = sorted(cam1.keys())
-lidarTimes = sorted(lidar.keys())
-imuTimes = sorted(imu.keys())
+
+joy = loadData(timesimDATAdirectory, "joy.npy")
 joyTimes = sorted(joy.keys())
 
+lidar = loadData(timesimDATAdirectory, "lidar.npy")
+lidarTimes = sorted(lidar.keys())
+
+del lidar 
+
+imu = loadData(timesimDATAdirectory, "imu.npy")
+imuTimes = sorted(imu.keys())
+
+del imu 
+
+
+if len(cam0Times) == 0:
+
+    raise RuntimeError("ERROR: no cam 0 frames found")
 
 outputFile = timesimDATAdirectory / "sync-data-timesim.csv"
 

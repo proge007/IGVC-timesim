@@ -15,6 +15,18 @@ timesimDataDirectory = dataTimesimDirectory()
 
 (rows, syncFile, MarkedERRORfile, MarkedERRORframes) = loadTimesimData(timesimDataDirectory)
 
+
+# Welcome Timesim code:
+# # This is a input visualization and replay system for the IGV project
+#  this takes data recorded during a IGV run, extracts all the frames and senor data then 
+#  allows the team to replay what occured during the run.
+# 
+# In short this allows us to view the synchronized senory data and camera frames all in one 
+# to find all unusally errors. 
+# 
+# #
+
+
 class WINDOW(QMainWindow):
 
     def __init__(self):

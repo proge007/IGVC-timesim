@@ -265,7 +265,3 @@ for cam in CAMERA_TOPICS:
 print("\nLiDAR:", len(lidar_dict))
 print("IMU:", len(imu_dict))
 print("Control:", len(joy_dict))
-
-
-
-
