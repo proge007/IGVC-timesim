@@ -1,20 +1,18 @@
 import argparse 
 import csv 
 from pathlib import Path
-from bisect import bisect_left
+import bisect
+import numpy
 
-import numpy as np 
 
-
-def nearestTimestamp(target, timestamps):
+def SYNCtimestamp(TIMEtarget, timestamps):
 
 
     if len(timestamps) == 0:
 
         raise RuntimeError("ERROR: no timestamps available for sync")
 
-    index = bisect_left(timestamps, target)
-
+    index = bisect.bisect_left(timestamps, TIMEtarget)
 
     if index == 0:
         return timestamps[0]
@@ -22,34 +20,34 @@ def nearestTimestamp(target, timestamps):
     if index == len(timestamps):
         return timestamps[-1]
     
-    before = timestamps[index - 1]
+    PREVIOUStimestamp = timestamps[index - 1]
 
-    after = timestamps[index]
+    NEXTtimestamp = timestamps[index]
 
-    if abs(after - target) <  abs(target - before):
-        return after
+    if abs(NEXTtimestamp - TIMEtarget) <  abs(TIMEtarget - PREVIOUStimestamp):
+        return NEXTtimestamp
     
-    return before 
+    return PREVIOUStimestamp 
 
 
 def loadData(dataDir, fileName):
-    return np.load(
+    return numpy.load(
         dataDir / fileName, 
         allow_pickle=True
     ).item()
 
 
-timesimParser = argparse.ArgumentParser()
+IDinstruction = argparse.ArgumentParser()
 
-timesimParser.add_argument(
+IDinstruction.add_argument(
     "--syncTIMESIMdata", required=True,
     help="timesim extracted"
 )
 
-args = timesimParser.parse_args()
+instructionDATA = IDinstruction.parse_args()
 
+timesimDATAdirectory = Path(instructionDATA.syncTIMESIMdata)
 
-timesimDATAdirectory = Path(args.syncTIMESIMdata)
 
 cam0 = loadData(timesimDATAdirectory, "cam0.npy")
 cam0Times = sorted(cam0.keys())
@@ -82,7 +80,6 @@ firstCam0Time = cam0Times[0]
 
 with outputFile.open("w", newline="") as file:
     
-
     writer = csv.writer(file)
     
     writer.writerow([
@@ -104,13 +101,13 @@ with outputFile.open("w", newline="") as file:
 
     for cam0Time in cam0Times:
 
-        cam1Time = nearestTimestamp(cam0Time,cam1Times)   
+        cam1Time = SYNCtimestamp(cam0Time,cam1Times)   
 
-        lidarTime = nearestTimestamp(cam0Time,lidarTimes)
+        lidarTime = SYNCtimestamp(cam0Time,lidarTimes)
 
-        imuTime = nearestTimestamp(cam0Time,imuTimes)
+        imuTime = SYNCtimestamp(cam0Time,imuTimes)
 
-        joyTime = nearestTimestamp(cam0Time,joyTimes)
+        joyTime = SYNCtimestamp(cam0Time,joyTimes)
 
         relativeTime = cam0Time - firstCam0Time
 
@@ -137,8 +134,3 @@ with outputFile.open("w", newline="") as file:
             joyValue[0],
             joyValue[1]
         ])
-
-
-    print("synchronization complete")
-    print("timeline:", outputFile)
-    print("timesim frames:", len(cam0))
