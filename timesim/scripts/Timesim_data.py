@@ -1,6 +1,5 @@
 import csv
 import argparse
-
 from pathlib import Path 
 
   
@@ -10,9 +9,9 @@ def dataTimesimDirectory():
 
     timesimParser.add_argument( "--syncTIMESIMdata", required=True, help="timesim sync data dict")
 
-    args = timesimParser.parse_args()
+    instructionDATA = timesimParser.parse_args()
 
-    timesimDATADirectory = Path(args.syncTIMESIMdata)
+    timesimDATADirectory = Path(instructionDATA.syncTIMESIMdata)
 
     return timesimDATADirectory
 
