@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # How to start the TimeSim 
-# first move to ' cd ~/IGVC-timesim/scripts '
+# first move to ' cd ~/IGVC-timesim/timesim/scripts '
 
-# then lastly initialize the following command to launch it 
+# then lastly run the following command to launch it 
 # ' ./STARTtimesim.sh ~/timesim-DATA/extracted/test01-full '
 
 env -i \

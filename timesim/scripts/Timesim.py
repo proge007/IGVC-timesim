@@ -2,7 +2,6 @@ import sys
 
 from PyQt5.QtCore import Qt as QtFramework, QTimer 
 
-
 from Timesim_data import (loadTimesimData, loadErrorReport, 
 framePreviousError, frameNextError, dataShowFrame, dataScheduleNextFrame,
 dataPreviousFrame, dataNextFrame, dataStartPlayback, dataPlayNextFrame, 
