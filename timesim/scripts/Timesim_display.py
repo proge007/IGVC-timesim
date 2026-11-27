@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt 
+from PyQt5.QtCore import Qt as QtFramework
 
 from PyQt5.QtGui import QPixmap
 
@@ -42,7 +42,7 @@ def displayWindow(display, rows):
 
         display.camera0Label = QLabel()
 
-        display.camera0Label.setAlignment(Qt.AlignCenter)
+        display.camera0Label.setAlignment(QtFramework.AlignCenter)
 
 
         camera0Layout.addWidget(display.camera0Label)
@@ -57,7 +57,7 @@ def displayWindow(display, rows):
 
         display.camera1Label = QLabel()
 
-        display.camera1Label.setAlignment(Qt.AlignCenter)
+        display.camera1Label.setAlignment(QtFramework.AlignCenter)
 
         camera1Layout.addWidget(display.camera1Label)
 
@@ -80,12 +80,12 @@ def displayWindow(display, rows):
         display.videoControlInfoLabel = QLabel()
 
 
-        display.videoControlInfoLabel.setAlignment(Qt.AlignCenter)
+        display.videoControlInfoLabel.setAlignment(QtFramework.AlignCenter)
 
         display.videoControlLayout.addWidget(display.videoControlInfoLabel)
 
 
-        display.videoSlider = QSlider(Qt.Horizontal)
+        display.videoSlider = QSlider(QtFramework.Horizontal)
         
         display.videoSlider.setMinimum(0)
         
@@ -138,7 +138,7 @@ def displayWindow(display, rows):
 
         display.infoLabel = QLabel()
 
-        display.infoLabel.setAlignment(Qt.AlignCenter)
+        display.infoLabel.setAlignment(QtFramework.AlignCenter)
 
         display.syncDataLayout.addWidget(display.infoLabel)
 
@@ -208,7 +208,7 @@ def displayShowFrame(display, camera0Path, camera1Path):
                 display.camera0Label.setText("camera 0 error")
         
         else:
-                pixmap0 = pixmap0.scaled(400,300,Qt.KeepAspectRatio,Qt.SmoothTransformation)
+                pixmap0 = pixmap0.scaled(400,300,QtFramework.KeepAspectRatio,QtFramework.SmoothTransformation)
         
                 display.camera0Label.setPixmap(pixmap0)
                 
@@ -218,14 +218,14 @@ def displayShowFrame(display, camera0Path, camera1Path):
                 display.camera1Label.setText("camera 1 error")
                 
         else:
-                pixmap1 = pixmap1.scaled(400,300,Qt.KeepAspectRatio,Qt.SmoothTransformation)
+                pixmap1 = pixmap1.scaled(400,300,QtFramework.KeepAspectRatio,QtFramework.SmoothTransformation)
                 
                 display.camera1Label.setPixmap(pixmap1)
 
 
 def displayViewReport(display, reportData):
         
-        display.reportWindow = QDialog(display, Qt.Window)
+        display.reportWindow = QDialog(display, QtFramework.Window)
         
         display.reportWindow.setWindowTitle("Timesim Error Logs")
         

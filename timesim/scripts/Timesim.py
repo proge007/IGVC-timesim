@@ -1,6 +1,7 @@
 import sys
 
-from PyQt5.QtCore import (Qt, QTimer) 
+from PyQt5.QtCore import Qt as QtFramework, QTimer 
+
 
 from Timesim_data import (loadTimesimData, loadErrorReport, 
 framePreviousError, frameNextError, dataShowFrame, dataScheduleNextFrame,
@@ -16,25 +17,23 @@ timesimDataDirectory = dataTimesimDirectory()
 (rows, syncFile, MarkedERRORfile, MarkedERRORframes) = loadTimesimData(timesimDataDirectory)
 
 
-# Welcome Timesim code:
-# # This is a input visualization and replay system for the IGV project
+# Welcome to the Timesim main code:
+# This is the input visualization and replay system for the IGV project
 #  this takes data recorded during a IGV run, extracts all the frames and senor data then 
 #  allows the team to replay what occured during the run.
 # 
-# In short this allows us to view the synchronized senory data and camera frames all in one 
-# to find all unusally errors. 
-# 
-# #
+# In short this allows us to view the synchronized senory data and camera frames all in one go
+# to find all errors. 
 
 
-class WINDOW(QMainWindow):
+class TIMESIMmainWINDOW(QMainWindow):
 
     def __init__(self):
         super().__init__()
 
         self.errorINFOmark = QLabel(f"Marked Errors: {len(MarkedERRORframes)}")
 
-        self.errorINFOmark.setAlignment(Qt.AlignCenter)
+        self.errorINFOmark.setAlignment(QtFramework.AlignCenter)
 
         self.setWindowTitle("TimeSim")
         
@@ -214,7 +213,7 @@ class WINDOW(QMainWindow):
                 
 application = QApplication(sys.argv)
             
-timesimWindow = WINDOW()
+timesimWindow = TIMESIMmainWINDOW()
 
 timesimWindow.show()
             
